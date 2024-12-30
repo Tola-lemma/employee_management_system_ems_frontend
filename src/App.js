@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import { Route, Routes } from "react-router-dom";
+import { PageNotFound } from "./Components/Container/Admin/Pages/PageNotFound/PageNotFound";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode } from "./Components/Container/Admin/theme";
+import { UserProvider } from "./Components/Container/Admin/Pages/global/LoginContext";
+import { ErrorProvider } from "./Components/Container/Admin/ToastErrorPage/ErrorContext";
+import { AdminPage } from "./Components/Container/Admin/Pages/Routes/AdminPage";
+// import {ProtectedRoute} from "./ProtectedRoute";     
+import { LoginPage } from "./Components/Container/Admin/LoginPage/LoginPage";
+export const App = () => {
+  const [theme, colorMode] = useMode("light");
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ColorModeContext.Provider value={colorMode}>
+      <UserProvider>
+      <ErrorProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          {/* <Route element={<ProtectedRoute/>}> */}
+          <Route path="/home/*" element={<AdminPage />} />
+          {/* </Route> */}
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </ThemeProvider>
+      </ErrorProvider>
+      </UserProvider>
+    </ColorModeContext.Provider>
   );
-}
-
-export default App;
+};

@@ -8,6 +8,7 @@ import { Dashboard } from "../Dashboard/Dashboard";
 import { Topbar } from "../global/Topbar";
 import { ColorModeContext,useMode } from "../../theme";
 import { ErrorMessage } from "../../ToastErrorPage/ErrorMessage";
+import ManageEmployee from "../Employee/ManageEmployee";
 export const AdminPage = () => {
   const [theme, colorMode] = useMode("light");
   return (
@@ -22,6 +23,7 @@ export const AdminPage = () => {
             <Topbar />
             <Routes>
               <Route path="/" element={<Dashboard />} />
+              <Route path="/manage employee" element={<ManageEmployee/>} />
               <Route path="/register" element={<Form />} />
               <Route path="/*" element={<PageNotFound />} />
             </Routes>

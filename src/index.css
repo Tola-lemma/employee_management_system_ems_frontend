@@ -37,11 +37,11 @@ body,
 /* conditionally render color for mui button */
 @media (prefers-color-scheme: dark) {
   :root {
-  --primary-color-dark: #fff; /* white */
+  --primary-color-dark: rgba(255, 255, 255, 0.09); /* white */
 }
 }
 @media (prefers-color-scheme: light) {
   :root {
-  --primary-color-light: black; /* black */
+  --primary-color-light: rgba(237, 237, 237, 1); /* black */
 }
 }

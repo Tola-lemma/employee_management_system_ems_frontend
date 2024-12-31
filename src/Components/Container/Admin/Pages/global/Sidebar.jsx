@@ -46,7 +46,7 @@ export const Sidebar = () => {
           color: "#868dfb !important",
         },
         "& .pro-menu-item.active": {
-          color: "#6870fa !important",
+          color: `${colors.primary[13]} !important`,
         },
       }}
     >
@@ -123,7 +123,7 @@ export const Sidebar = () => {
             </Typography>
             <Item
               title="Manage Employee"
-              to="/home/employee"
+              to="/home/manage employee"
               icon={<PeopleOutlined />}
               selected={selected}
               setSelected={setSelected}

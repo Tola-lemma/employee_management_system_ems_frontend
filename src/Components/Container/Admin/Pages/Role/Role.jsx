@@ -1,16 +1,13 @@
 import { DataGrid , GridToolbar} from '@mui/x-data-grid';
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Typography } from "@mui/material";
 import { tokens } from "../../theme";
 import { Header } from '../../components/Header.jsx';
 import { useGetAllRolesQuery } from '../../../../Features/Role.jsx';
+import DataGridSkeleton from '../../components/Skeleton.jsx';
 const Role = () => {
   const { data, isLoading, error } = useGetAllRolesQuery();
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-  
-  if (isLoading) return <p>Loading Role data...</p>;
-  if (error) return <p>Error loading Role: {error.message}</p>;
- 
   // Define columns for the DataGrid
   const columns = [
     { field: 'role_name', headerName: 'Role/Permission', width: 100 },
@@ -18,7 +15,9 @@ const Role = () => {
 
   return (
     <Box m="20px">
-     <Header title="Manage Role" subtitle="Dashboard to Manage Role" />
+     <Header title="Manage Role" subtitle="Dashboard to Manage Role" /> 
+     {isLoading? <DataGridSkeleton/>:<>
+     <Typography variant="body1" color="error.main" sx={{fontSize:16,fontStyle:"italic", fontWeight:"bold"}}>NB. Permission is based on role.</Typography>
       <Box
         sx={{
           height: "auto",
@@ -62,6 +61,8 @@ const Role = () => {
           }}
         />
       </Box>
+      </>}
+      {error && <p>Error loading Role: {error?.message}</p>}
     </Box>
   );
 };

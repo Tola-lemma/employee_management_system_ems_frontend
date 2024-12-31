@@ -129,13 +129,6 @@ export const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Contacts Information"
-              to="/home/contacts"
-              icon={<ContactsOutlined />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
               title="Department"
               to="/home/department"
               icon={<DeviceHub />}
@@ -146,6 +139,13 @@ export const Sidebar = () => {
               title="Role"
               to="/home/role"
               icon={<Security />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+             <Item
+              title="Contacts Information"
+              to="/home/contacts"
+              icon={<ContactsOutlined />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -164,16 +164,16 @@ export const Sidebar = () => {
               setSelected={setSelected}
             />
              <Item
-              title="task"
-              to="/home/task"
-              icon={<DisplaySettings />}
+              title="Leave"
+              to="/home/leave"
+              icon={<CalendarTodayOutlined />}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Calendar"
-              to="/home/calendar"
-              icon={<CalendarTodayOutlined />}
+             <Item
+              title="task"
+              to="/home/task"
+              icon={<DisplaySettings />}
               selected={selected}
               setSelected={setSelected}
             />

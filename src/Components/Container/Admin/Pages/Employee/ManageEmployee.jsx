@@ -4,13 +4,12 @@ import { useGetAllEmployeesQuery } from '../../../../Features/Employee.jsx';
 import { tokens } from "../../theme";
 import { Header } from '../../components/Header.jsx';
 import './footerbtn.css' 
+import DataGridSkeleton from '../../components/Skeleton.jsx';
 const ManageEmployee = () => {
   const { data, isLoading, error } = useGetAllEmployeesQuery();
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
   
-  if (isLoading) return <p>Loading Employee data...</p>;
-  if (error) return <p>Error loading employee: {error.message}</p>;
  
   // Define columns for the DataGrid
   const columns = [
@@ -31,6 +30,7 @@ const ManageEmployee = () => {
   return (
     <Box m="20px">
      <Header title="Manage Employee" subtitle="Dashboard to Manage Employee" />
+     {isLoading?<DataGridSkeleton  />:
       <Box
         sx={{
           height: "auto",
@@ -73,7 +73,8 @@ const ManageEmployee = () => {
             toolbar: GridToolbar ,
           }}
         />
-      </Box>
+      </Box>}
+      {error && <p>Error loading employee: {error?.message}</p>}
     </Box>
   );
 };

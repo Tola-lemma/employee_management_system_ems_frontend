@@ -3,6 +3,7 @@ import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { Header } from '../../components/Header.jsx';
 import { useGetAllDepartmentsQuery } from '../../../../Features/Department.jsx';
+import DataGridSkeleton from '../../components/Skeleton.jsx';
 const Department = () => {
   const { data, isLoading, error } = useGetAllDepartmentsQuery();
  const theme = useTheme();
@@ -19,6 +20,7 @@ const Department = () => {
   return (
     <Box m="20px">
      <Header title="Manage Department" subtitle="Dashboard to Manage Department" />
+     {isLoading? <DataGridSkeleton/>:
       <Box
         sx={{
           height: "auto",
@@ -61,7 +63,8 @@ const Department = () => {
             toolbar: GridToolbar ,
           }}
         />
-      </Box>
+      </Box>}     
+      {error && <p>Error loading Department: {error?.message}</p>}
     </Box>
   );
 };

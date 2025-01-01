@@ -11,7 +11,7 @@ export const ErrorMessage = () => {
       const { type, message: toastMessage } = message;
 
       const toastOptions = {
-        position: toast.POSITION.TOP_RIGHT,
+        // position: toast.POSITION.TOP_RIGHT,
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,

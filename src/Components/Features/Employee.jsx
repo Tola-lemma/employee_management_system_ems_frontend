@@ -7,11 +7,9 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
         url: "/employees",
       }),
       transformResponse: (response) => {
-
         if (!response?.result || !Array.isArray(response.result)) {
           throw new Error("Invalid response structure or empty result");
         }
-
         // Transform the data
         return response.result.map((item) => ({
           employee_id: item.employee_id,
@@ -28,9 +26,72 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
           role: item.role,
         }));
       },
-      providesTags: ["ems"], 
+      providesTags: ["ems"],
+    }),
+
+    // Fetch a specific employee by ID
+    getEmployee: builder.query({
+      query: (employee_id) => ({
+        url: `/employees/${employee_id}`,
+      }),
+      transformResponse: (response) => {
+        if (!response?.result || typeof response.result !== "object") {
+          throw new Error("Invalid response structure or empty result");
+        }
+        // Return transformed employee data
+        return {
+          employee_id: response.result.employee_id,
+          first_name: response.result.first_name,
+          last_name: response.result.last_name,
+          email: response.result.email,
+          phone: response.result.phone,
+          date_of_birth: response.result.date_of_birth,
+          address: response.result.address,
+          department: response.result.department,
+          date_joined: response.result.date_joined,
+          status: response.result.status,
+          profile_picture: response.result.profile_picture,
+          role: response.result.role,
+        };
+      },
+      providesTags: ["ems"],
+    }),
+
+    // Create a new employee
+    createEmployee: builder.mutation({
+      query: (newEmployeeData) => ({
+        url: "/employees",
+        method: "POST",
+        body: newEmployeeData,
+      }),
+      invalidatesTags: ["ems"],
+    }),
+
+    // Update an existing employee by ID
+    updateEmployee: builder.mutation({
+      query: ({ employee_id, updatedData }) => ({
+        url: `/employees/${employee_id}`,
+        method: "PUT",
+        body: updatedData,
+      }),
+      providesTags: ["ems"],
+    }),
+
+    // Delete an employee by ID
+    deleteEmployee: builder.mutation({
+      query: (employee_id) => ({
+        url: `/employees/${employee_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ['ems'],
     }),
   }),
 });
 
-export const { useGetAllEmployeesQuery } = employeeApiSlice;
+export const {
+  useGetAllEmployeesQuery,
+  useGetEmployeeQuery,
+  useCreateEmployeeMutation,
+  useUpdateEmployeeMutation,
+  useDeleteEmployeeMutation,
+} = employeeApiSlice;

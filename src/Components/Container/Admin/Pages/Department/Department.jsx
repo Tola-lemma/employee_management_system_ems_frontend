@@ -8,10 +8,6 @@ const Department = () => {
   const { data, isLoading, error } = useGetAllDepartmentsQuery();
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-  
-  if (isLoading) return <p>Loading Department data...</p>;
-  if (error) return <p>Error loading Department: {error.message}</p>;
- 
   // Define columns for the DataGrid
   const columns = [
     { field: 'department_name', headerName: 'Department', width: 100 },
@@ -20,7 +16,7 @@ const Department = () => {
   return (
     <Box m="20px">
      <Header title="Manage Department" subtitle="Dashboard to Manage Department" />
-     {isLoading? <DataGridSkeleton/>:
+     {isLoading? <DataGridSkeleton/> :<>
       <Box
         sx={{
           height: "auto",
@@ -63,8 +59,10 @@ const Department = () => {
             toolbar: GridToolbar ,
           }}
         />
-      </Box>}     
-      {error && <p>Error loading Department: {error?.message}</p>}
+      </Box>
+      </>
+      }     
+      {error && <p style={{color:"red",fontSize:16}}>Error loading Department: {error?.message}</p>}
     </Box>
   );
 };

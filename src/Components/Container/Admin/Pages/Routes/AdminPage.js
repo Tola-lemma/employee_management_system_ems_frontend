@@ -11,6 +11,7 @@ import { ErrorMessage } from "../../ToastErrorPage/ErrorMessage";
 import ManageEmployee from "../Employee/ManageEmployee";
 import Department from "../Department/Department";
 import Role from "../Role/Role";
+import LeaveAdmin from "../Leave/LeaveAdmin";
 export const AdminPage = () => {
   const [theme, colorMode] = useMode("light");
   return (
@@ -23,11 +24,12 @@ export const AdminPage = () => {
           <Sidebar />
           <main className="content">
             <Topbar />
-            <Routes>
+            <Routes> 
               <Route path="/" element={<Dashboard />} />
               <Route path="/manage employee" element={<ManageEmployee/>} />
               <Route path="/department" element={<Department/>} />
               <Route path="/role" element={<Role/>} />
+              <Route path="/leave" element={<LeaveAdmin/>} />
               <Route path="/register" element={<Form />} />
               <Route path="/*" element={<PageNotFound />} />
             </Routes>

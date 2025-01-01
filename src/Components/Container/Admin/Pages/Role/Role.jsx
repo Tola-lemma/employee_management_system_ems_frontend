@@ -62,7 +62,7 @@ const Role = () => {
         />
       </Box>
       </>}
-      {error && <p>Error loading Role: {error?.message}</p>}
+      {error && <p style={{color:"red",fontSize:16}}>Error loading Role: {error?.message}</p>}
     </Box>
   );
 };

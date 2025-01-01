@@ -14,14 +14,18 @@ import  './form.css'
 import { tokens } from "../../theme";
 import { useGetAllDepartmentsQuery } from "../../../../Features/Department";
 import { useGetAllRolesQuery } from "../../../../Features/Role";
+import { useCreateEmployeeMutation } from "../../../../Features/Employee";
+import FormSkeleton from "./FormSkeleton";
+import { useContext } from "react";
+import { ErrorContext } from "../../ToastErrorPage/ErrorContext";
 export const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const { data: departments = [], isLoading, isError, error } = useGetAllDepartmentsQuery();
     const { data: roles = [] } = useGetAllRolesQuery(); 
-    if (isLoading) return <p>Loading...</p>;
-    if (isError) return <p>Error: {error.message}</p>;
+    const [createEmployee, { isLoading:loadingCreate, error:errorCreating }] = useCreateEmployeeMutation();
+    const {showSuccess , showError} = useContext(ErrorContext)
     const formattedDate = (date) => {
       if (!date) return "Invalid date";
     
@@ -33,13 +37,22 @@ export const Form = () => {
         title="CREATE EMPLOYEE"
         subtitle="Create a New Employee member's Profile"
       />
-
+     {isLoading?<FormSkeleton/>:
       <Formik
         initialValues={initialValues}
         validationSchema={checkoutSchema}
-        onSubmit={(values) => {
-          // Submit logic here
-          console.log(values);
+        onSubmit={async (values, { resetForm }) => {
+          try {
+            const result = await createEmployee(values).unwrap();
+            if (result?.status ==="success") {
+              showSuccess(result?.message);
+              resetForm(); 
+            } else {
+              showError(result?.message);
+            }
+          } catch (err) {
+            showError("Error creating employee", err);
+          }
         }}
       >
         {({
@@ -211,13 +224,15 @@ export const Form = () => {
               </Select>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <CustomButton type="submit" className="btn btn-info">
-                Create New Employee
+              <CustomButton type="submit" className="btn btn-info" disabled={loadingCreate} loading={loadingCreate}>
+              Create Employee
               </CustomButton>
             </Box>
           </form>
         )}
       </Formik>
+      }
+      {(isError || errorCreating )&&<p style={{color:"red",fontSize:16}}>Error: {error.message}</p>}
     </Box>
   );
 };

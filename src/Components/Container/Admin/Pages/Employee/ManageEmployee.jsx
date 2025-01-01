@@ -36,7 +36,7 @@ const ManageEmployee = () => {
     };
   // Define columns for the DataGrid
   const columns = [
-    { field: 'full_name', headerName: 'Full Name', width: 100 ,
+    { field: 'first_name', headerName: 'Full Name', width: 100 ,
       renderCell: (params) => (
         <span>
           {params?.row.first_name || ""} {params?.row.last_name || ""}

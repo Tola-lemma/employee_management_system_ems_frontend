@@ -1,6 +1,6 @@
 import { DataGrid , GridToolbar} from '@mui/x-data-grid';
-import { Box, Tooltip, useTheme } from "@mui/material";
-import { useGetAllEmployeesQuery, useUpdateEmployeeMutation } from '../../../../Features/Employee.jsx';
+import { Badge, Box, Tooltip, useTheme } from "@mui/material";
+import { useGetAllEmployeesQuery, usePasswordResetMutation, useUpdateEmployeeMutation } from '../../../../Features/Employee.jsx';
 import { tokens } from "../../theme";
 import { Header } from '../../components/Header.jsx';
 import './footerbtn.css' 
@@ -12,6 +12,7 @@ import React, { useContext, useState } from 'react';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { ErrorContext } from '../../ToastErrorPage/ErrorContext.jsx';
+import { LockReset } from '@mui/icons-material';
 const ManageEmployee = () => {
   const { data, isLoading, error ,refetch } = useGetAllEmployeesQuery();
  const theme = useTheme();
@@ -19,6 +20,7 @@ const ManageEmployee = () => {
     const [modalAction, setModalAction] = useState("");
     const [selectedRow, setSelectedRow] = useState(null);
    const [updateEmployee] = useUpdateEmployeeMutation();
+   const [passwordReset] = usePasswordResetMutation();
    const {showSuccess , showError} = useContext(ErrorContext)
     const handleModalOpen = (action, row) => {
       setModalAction(action);
@@ -44,7 +46,6 @@ const ManageEmployee = () => {
         showError("An error occurred while updating the status.");
       }
     };
-  
     const handleRowClick = (row) => {
       if (row.status === "Inactive") {
         const confirmReactivate = window.confirm(
@@ -53,6 +54,40 @@ const ManageEmployee = () => {
         if (confirmReactivate) toggleStatus(row);
       }
     };
+    const handlePasswordReset = (employee_id) => {
+      const confirmAction = window.confirm(
+        "Are you sure you want to reset the password? An email with the new password will be sent to the employee."
+      );
+      if (confirmAction) {
+        passwordReset(employee_id)
+          .unwrap()
+          .then(() => {
+            showSuccess("Password reset email has been sent successfully.");
+            refetch()
+          })
+          .catch((error) => {
+            showError(`Failed to send reset email: ${error.message}`);
+          });
+      }
+    };
+    const RenderPasswordResetButton = (params) => (
+        <Tooltip title="Reset Bad Login or Password forget">
+        <button
+          type="button"
+          className="btn btn-info"
+          onClick={() => handlePasswordReset(params?.row.employee_id)}
+          disabled={params?.row.role === "admin" || params?.row.status === "Inactive"}
+          style={{
+            cursor: params?.row.role === "admin" ? "not-allowed" : "pointer",
+            opacity: params?.row.role === "admin" ? 0.5 : 1,
+          }}
+        >
+          <Badge badgeContent={params?.row.bad_login_attempts} color="error">
+            <LockReset color="action" sx={{ color: "black" }} />
+          </Badge>
+        </button>
+      </Tooltip>
+    );
   // Define columns for the DataGrid
   const columns = [
     { field: 'first_name', headerName: 'Full Name', width: 100 ,
@@ -107,9 +142,10 @@ const ManageEmployee = () => {
   {
     field: "action",
     headerName: "Action",
-    width: 200,
+    width: 290,
+    headerAlign: "center",
     renderCell: (params) => (
-      <div style={{ display: "flex", gap: "10px",marginTop:'5px' }}>
+      <div style={{ display: "flex", gap: "10px",justifyContent: "center" }}>
         <button
          type="button"
          className="btn btn-primary"
@@ -120,7 +156,7 @@ const ManageEmployee = () => {
         <button
           type="button"
           className="btn btn-warning"
-          disabled={params.row.status === "Inactive"}
+          disabled={params?.row.status === "Inactive"}
           onClick={() => handleModalOpen("Edit", params.row)}
         >
           Edit
@@ -129,14 +165,15 @@ const ManageEmployee = () => {
          type="button"
          className="btn btn-danger"
          onClick={() => handleModalOpen("Delete", params.row)}
-         disabled={params.row.role  === "admin" || params.row.status === "Inactive"}
+         disabled={params?.row.role  === "admin" || params.row.status === "Inactive"}
           style={{
-            cursor: params.row.role === "admin" ? "not-allowed" : "pointer",
-            opacity: params.row.role === "admin" ? 0.5 : 1,
+            cursor: params?.row.role === "admin" ? "not-allowed" : "pointer",
+            opacity: params?.row.role === "admin" ? 0.5 : 1,
           }}
         >
           Delete
         </button>
+        <RenderPasswordResetButton {...params} />
       </div>
     ),
   },

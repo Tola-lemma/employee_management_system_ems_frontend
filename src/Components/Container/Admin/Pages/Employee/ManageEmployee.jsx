@@ -120,6 +120,7 @@ const ManageEmployee = () => {
         <button
           type="button"
           className="btn btn-warning"
+          disabled={params.row.status === "Inactive"}
           onClick={() => handleModalOpen("Edit", params.row)}
         >
           Edit
@@ -128,6 +129,11 @@ const ManageEmployee = () => {
          type="button"
          className="btn btn-danger"
          onClick={() => handleModalOpen("Delete", params.row)}
+         disabled={params.row.role  === "admin" || params.row.status === "Inactive"}
+          style={{
+            cursor: params.row.role === "admin" ? "not-allowed" : "pointer",
+            opacity: params.row.role === "admin" ? 0.5 : 1,
+          }}
         >
           Delete
         </button>

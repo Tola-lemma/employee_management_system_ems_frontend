@@ -9,6 +9,8 @@ import ViewModal from '../../components/Modals/ViewModal.jsx';
 import EditModal from '../../components/Modals/EditModal.jsx';
 import DeleteModal from '../../components/Modals/DeleteModal.jsx';
 import React, { useState } from 'react';
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 const ManageEmployee = () => {
   const { data, isLoading, error ,refetch } = useGetAllEmployeesQuery();
  const theme = useTheme();
@@ -55,11 +57,13 @@ const ManageEmployee = () => {
       renderCell: (params) => {
         const imageUrl = params?.row.profile_picture || "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"; 
         return (
+          <Zoom>
           <img
             src={imageUrl}
             alt="Profile"
             style={{ width: 40, height: 40, borderRadius: "50%",  mixBlendMode:"multiply" }}
           />
+          </Zoom>
         );
       
     }, 

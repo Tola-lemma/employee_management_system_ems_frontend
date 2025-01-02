@@ -13,6 +13,8 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
         // Transform the data
         return response.result.map((item) => ({
           employee_id: item.employee_id,
+          role_id:item.role_id,
+          department_id:item.department_id,
           first_name: item.first_name,
           last_name: item.last_name,
           email: item.email,
@@ -69,10 +71,10 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
 
     // Update an existing employee by ID
     updateEmployee: builder.mutation({
-      query: ({ employee_id, updatedData }) => ({
+      query: ({ employee_id, body }) => ({
         url: `/employees/${employee_id}`,
         method: "PUT",
-        body: updatedData,
+        body,
       }),
       providesTags: ["ems"],
     }),

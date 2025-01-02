@@ -10,7 +10,7 @@ import EditModal from '../../components/Modals/EditModal.jsx';
 import DeleteModal from '../../components/Modals/DeleteModal.jsx';
 import React, { useState } from 'react';
 const ManageEmployee = () => {
-  const { data, isLoading, error } = useGetAllEmployeesQuery();
+  const { data, isLoading, error ,refetch } = useGetAllEmployeesQuery();
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [modalAction, setModalAction] = useState("");
@@ -23,16 +23,13 @@ const ManageEmployee = () => {
   
     const handleModalClose = () => {
       setModalAction("");
+      refetch()
       setSelectedRow(null);
     };
   
     const handleDelete = (employee_id) => {
       // Delete logic
       console.log(`Deleted profile with id: ${employee_id}`);
-    };
-    const handleSave = (updatedData) => {
-      // Handle save logic 
-      console.log("Updated Data:", updatedData);
     };
   // Define columns for the DataGrid
   const columns = [
@@ -61,7 +58,7 @@ const ManageEmployee = () => {
           <img
             src={imageUrl}
             alt="Profile"
-            style={{ width: 40, height: 40, borderRadius: "50%" }}
+            style={{ width: 40, height: 40, borderRadius: "50%",  mixBlendMode:"multiply" }}
           />
         );
       
@@ -147,7 +144,7 @@ const ManageEmployee = () => {
         />
       </Box>
       <ViewModal open={modalAction === "View"} onClose={handleModalClose} data={selectedRow} />
-      <EditModal open={modalAction === "Edit"} onClose={handleModalClose} data={selectedRow} onSave={handleSave} />
+      <EditModal open={modalAction === "Edit"} onClose={handleModalClose} data={selectedRow} />
       <DeleteModal open={modalAction === "Delete"} onClose={handleModalClose} data={selectedRow} onDelete={handleDelete} />
       </>}
       {error && <p style={{color:"red",fontSize:16}}>Error loading employee: {error?.message}</p>}

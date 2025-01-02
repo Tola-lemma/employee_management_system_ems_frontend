@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Box, Typography, Button } from "@mui/material";
+import { Header } from "../Header";
 
 const DeleteModal = ({ open, onClose, data, onDelete }) => {
   return (
@@ -17,7 +18,10 @@ const DeleteModal = ({ open, onClose, data, onDelete }) => {
           maxWidth: 400,
         }}
       >
-        <Typography variant="h6">{`Delete Confirmation`}</Typography>
+            <Header
+               title="DELETE EMPLOYEE PROFILE"
+               subtitle="Delete Employee member's Profile"
+             />
         <Typography>
           Are you sure you want to delete the profile of{" "}
           {data?.first_name} {data?.last_name}?

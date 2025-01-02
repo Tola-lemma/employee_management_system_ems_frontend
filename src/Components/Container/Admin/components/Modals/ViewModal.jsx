@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Box, Typography, Button } from "@mui/material";
+import { Header } from "../Header";
 
 const ViewModal = ({ open, onClose, data }) => {
   return (
@@ -20,7 +21,10 @@ const ViewModal = ({ open, onClose, data }) => {
           maxWidth: 800,
         }}
       >
-        <Typography variant="h6">{`View Details`}</Typography>
+            <Header
+                title="VIEW EMPLOYEE PROFILE"
+                subtitle="View Employee member's Profile"
+              />
         <Box sx={{ display: "flex", gap: 2 }}>
           {/* Profile Image */}
           <Box>

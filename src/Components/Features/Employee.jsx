@@ -25,7 +25,8 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
           date_joined: item.date_joined,
           status: item.status,
           profile_picture: item.profile_picture,
-          role: item.role,
+          role: item.role,          
+          bad_login_attempts: item.bad_login_attempts,
         }));
       },
       providesTags: ["ems"],
@@ -87,6 +88,12 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['ems'],
     }),
+    passwordReset: builder.mutation({
+      query: (employee_id) => ({
+        url: `/password-reset/${employee_id}`,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -96,4 +103,5 @@ export const {
   useCreateEmployeeMutation,
   useUpdateEmployeeMutation,
   useDeleteEmployeeMutation,
+  usePasswordResetMutation
 } = employeeApiSlice;

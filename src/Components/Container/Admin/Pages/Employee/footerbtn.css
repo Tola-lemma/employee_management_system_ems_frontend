@@ -4,3 +4,7 @@
 .MuiDataGrid-panelFooter button, .css-4rdffl-MuiDataGrid-panelFooter button{
   color: var(--primary-color-light);
 }
+.disabled-row {
+  opacity: 0.7; 
+  cursor:not-allowed; 
+}

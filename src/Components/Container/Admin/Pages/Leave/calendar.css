@@ -1,0 +1,8 @@
+.react-calendar .highlight {
+      background-color: #f9fd15 !important;
+      /* border-radius: 50%; */
+    }
+    .custom-calendar {
+      width: 90%; 
+      height: auto; 
+    }

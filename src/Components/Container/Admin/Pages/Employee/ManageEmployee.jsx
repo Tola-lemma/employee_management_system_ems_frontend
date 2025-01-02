@@ -1,6 +1,6 @@
 import { DataGrid , GridToolbar} from '@mui/x-data-grid';
-import { Box, useTheme } from "@mui/material";
-import { useGetAllEmployeesQuery } from '../../../../Features/Employee.jsx';
+import { Box, Tooltip, useTheme } from "@mui/material";
+import { useGetAllEmployeesQuery, useUpdateEmployeeMutation } from '../../../../Features/Employee.jsx';
 import { tokens } from "../../theme";
 import { Header } from '../../components/Header.jsx';
 import './footerbtn.css' 
@@ -8,16 +8,18 @@ import DataGridSkeleton from '../../components/Skeleton.jsx';
 import ViewModal from '../../components/Modals/ViewModal.jsx';
 import EditModal from '../../components/Modals/EditModal.jsx';
 import DeleteModal from '../../components/Modals/DeleteModal.jsx';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
+import { ErrorContext } from '../../ToastErrorPage/ErrorContext.jsx';
 const ManageEmployee = () => {
   const { data, isLoading, error ,refetch } = useGetAllEmployeesQuery();
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [modalAction, setModalAction] = useState("");
     const [selectedRow, setSelectedRow] = useState(null);
-  
+   const [updateEmployee] = useUpdateEmployeeMutation();
+   const {showSuccess , showError} = useContext(ErrorContext)
     const handleModalOpen = (action, row) => {
       setModalAction(action);
       setSelectedRow(row);
@@ -28,10 +30,28 @@ const ManageEmployee = () => {
       refetch()
       setSelectedRow(null);
     };
+    const toggleStatus = async (row) => {
+      try {
+        const newStatus = row.status === "Inactive" ? "Active" : "Inactive";
+        await updateEmployee({
+          employee_id: row.employee_id,
+          body: { status: newStatus },
+        }).unwrap();
+        showSuccess(`User status changed to ${newStatus}`);
+        refetch(); 
+      } catch (err) {
+        console.error("Failed to update user status:", err);
+        showError("An error occurred while updating the status.");
+      }
+    };
   
-    const handleDelete = (employee_id) => {
-      // Delete logic
-      console.log(`Deleted profile with id: ${employee_id}`);
+    const handleRowClick = (row) => {
+      if (row.status === "Inactive") {
+        const confirmReactivate = window.confirm(
+          `User "${row.first_name} ${row.last_name}" is Inactive. Do you want to reactivate?`
+        );
+        if (confirmReactivate) toggleStatus(row);
+      }
     };
   // Define columns for the DataGrid
   const columns = [
@@ -49,9 +69,25 @@ const ManageEmployee = () => {
     { field: 'department', headerName: 'Department', width: 100 },
     { field: 'date_joined', headerName: 'Date Joined/Hired', width: 100,    },
     { field: 'role', headerName: 'Role', width: 100 },
-    { field: 'status', headerName: 'status', width: 100 },
-    {  
-      field: "profile_picture",
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 100,
+      renderCell: (params) => {
+        const isInactive = params.row.status === 'Inactive';
+        return (
+          <Tooltip
+          title={isInactive ? "This employee is inactive. Click to reactivate." : ""}
+          arrow
+        >
+          <span style={{ color: isInactive ? `${colors.redAccent[400]}` : '', fontWeight: isInactive ? 'bold' : '' }}>
+            {params.row.status}
+          </span>
+          </Tooltip>
+        );
+      }
+    },
+   {  field: "profile_picture",
       headerName: "Profile Picture",
       width: 60,
       renderCell: (params) => {
@@ -142,6 +178,10 @@ const ManageEmployee = () => {
           pageSize={10}
           rowsPerPageOptions={[5, 10, 20]}
           getRowId={(row) => row.employee_id} // Ensure the `id` field is used as the unique row identifier
+          getRowClassName={(params) =>
+            params.row.status === "Inactive" ? "disabled-row" : ""
+          }
+          onRowClick={(params) => handleRowClick(params.row)}
           slots={{
             toolbar: GridToolbar ,
           }}
@@ -149,7 +189,7 @@ const ManageEmployee = () => {
       </Box>
       <ViewModal open={modalAction === "View"} onClose={handleModalClose} data={selectedRow} />
       <EditModal open={modalAction === "Edit"} onClose={handleModalClose} data={selectedRow} />
-      <DeleteModal open={modalAction === "Delete"} onClose={handleModalClose} data={selectedRow} onDelete={handleDelete} />
+      <DeleteModal open={modalAction === "Delete"} onClose={handleModalClose} data={selectedRow} />
       </>}
       {error && <p style={{color:"red",fontSize:16}}>Error loading employee: {error?.message}</p>}
     </Box>

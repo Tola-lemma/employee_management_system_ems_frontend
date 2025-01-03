@@ -10,11 +10,13 @@ import DeleteDepartment from '../../components/DepartmentModal/DeleteModal.jsx';
 import { useContext, useState } from 'react';
 import { ErrorContext } from '../../ToastErrorPage/ErrorContext.jsx';
 import CreateModal from '../../components/DepartmentModal/CreateModal.jsx';
+import { useGetAllEmployeesQuery } from '../../../../Features/Employee.jsx';
 const Department = () => {
   const { data, isLoading, error,refetch } = useGetAllDepartmentsQuery();
   const [updateDepartment] = useUpdateDepartmentMutation();
   const [createDepartment] = useCreateDepartmentMutation();
   const [deleteDepartment] = useDeleteDepartmentMutation();
+  const { data: employeeData } = useGetAllEmployeesQuery();
   const { showSuccess, showError } = useContext(ErrorContext)
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -78,9 +80,29 @@ const Department = () => {
         showError('Unable to delete Department ' + error?.data ? error?.data?.message : error?.error)
       }     
     };
+//department manager
+const departmentManagers = {};
+  if (employeeData) {
+    employeeData?.forEach((employee) => {
+      console.log("employee",employee);
+      const { department, role, first_name, last_name } = employee;
+      if (role === 'manager') {
+        if (!departmentManagers[department]) {
+          departmentManagers[department] = [];
+        }
+        departmentManagers[department].push(first_name +" " + last_name);
+      }
+    });
+  }
+
   const columns = [
     { field: 'department_name', headerName: 'Department', width: 300 },
-    { field: 'department_head', headerName: 'Department Head', width: 300 },
+    { field: 'department_head', headerName: 'Department Head', width: 300,
+      renderCell: (params) => {
+        const managers = departmentManagers[params?.row.department_name] || [];
+        return managers.length > 0 ? managers.join(' and ') : 'N/A';
+      }
+     },
     {
       field:'action', headerName:'Action',headerAlign:'center',width:300,
       renderCell: (params) => (

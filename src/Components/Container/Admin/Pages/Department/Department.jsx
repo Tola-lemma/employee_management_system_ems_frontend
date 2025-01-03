@@ -54,11 +54,14 @@ const Department = () => {
               refetch()
              }
              else{
-              showError('Unable to update Department'+result?.error.message)
+              showError('Unable to create Department'+result?.error.message)
              }
       } catch (error) {
-        showError('Unable to update Department ' + error?.data ? error?.data?.message : error?.error)
-      }      
+        if (error?.status===500) {
+          showError('Unable Create department  ' + error?.data?.error)}
+          else{
+            showError('Unable create department  ' + error?.data ? error?.data?.message : error?.error)
+          }}      
     };
   
     const handleDelete = async (departmentId) => {

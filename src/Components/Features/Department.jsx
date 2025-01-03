@@ -19,8 +19,45 @@ export const departmentApiSlice = apiSlice.injectEndpoints({
         }));
       },
       providesTags: ["ems"], 
+    }), 
+    // Create a new department
+    createDepartment: builder.mutation({
+      query: (newDepartment) => ({
+        url: "/departments",
+        method: "POST",
+        body: newDepartment,
+      }),
+      invalidatesTags: [{ type: "ems", id: "LIST" }],
+    }),
+
+    // Update a department
+    updateDepartment: builder.mutation({
+      query: ({ department_id, ...updatedData }) => ({
+        url: `/departments/${department_id}`,
+        method: "PUT",
+        body: updatedData,
+      }),
+      invalidatesTags: (result, error, { department_id }) => [
+        { type: "ems", id: department_id },
+      ],
+    }),
+
+    // Delete a department
+    deleteDepartment: builder.mutation({
+      query: (department_id) => ({
+        url: `/departments/${department_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, department_id) => [
+        { type: "ems", id: department_id },
+      ],
     }),
   }),
 });
 
-export const { useGetAllDepartmentsQuery } = departmentApiSlice;
+export const {
+  useGetAllDepartmentsQuery,
+  useCreateDepartmentMutation,
+  useUpdateDepartmentMutation,
+  useDeleteDepartmentMutation,
+} = departmentApiSlice;

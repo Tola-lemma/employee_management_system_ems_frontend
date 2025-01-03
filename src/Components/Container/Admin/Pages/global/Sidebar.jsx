@@ -171,6 +171,13 @@ export const Sidebar = () => {
               setSelected={setSelected}
             />
              <Item
+              title="Attendace"
+              to="/home/attendance"
+              icon={<CalendarTodayOutlined />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+             <Item
               title="task"
               to="/home/task"
               icon={<DisplaySettings />}

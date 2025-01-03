@@ -2,15 +2,117 @@ import { DataGrid , GridToolbar} from '@mui/x-data-grid';
 import { Box, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { Header } from '../../components/Header.jsx';
-import { useGetAllDepartmentsQuery } from '../../../../Features/Department.jsx';
+import { useCreateDepartmentMutation, useDeleteDepartmentMutation, useGetAllDepartmentsQuery, useUpdateDepartmentMutation } from '../../../../Features/Department.jsx';
 import DataGridSkeleton from '../../components/Skeleton.jsx';
+import ViewDepartment from '../../components/DepartmentModal/ViewModal.jsx';
+import EditDepartment from '../../components/DepartmentModal/EditModal.jsx';
+import DeleteDepartment from '../../components/DepartmentModal/DeleteModal.jsx';
+import { useContext, useState } from 'react';
+import { ErrorContext } from '../../ToastErrorPage/ErrorContext.jsx';
+import CreateModal from '../../components/DepartmentModal/CreateModal.jsx';
 const Department = () => {
-  const { data, isLoading, error } = useGetAllDepartmentsQuery();
+  const { data, isLoading, error,refetch } = useGetAllDepartmentsQuery();
+  const [updateDepartment] = useUpdateDepartmentMutation();
+  const [createDepartment] = useCreateDepartmentMutation();
+  const [deleteDepartment] = useDeleteDepartmentMutation();
+  const { showSuccess, showError } = useContext(ErrorContext)
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-  // Define columns for the DataGrid
+    const [modalState, setModalState] = useState({
+      action: null,
+      open: false,
+      department: null,
+    });
+  
+    const handleModalOpen = (action, department) => {
+      setModalState({ action, open: true, department });
+    };
+  
+    const handleModalClose = () => {
+      setModalState({ action: null, open: false, department: null });
+    };
+  
+    const handleEdit =async (updatedDepartment) => {
+      try {
+        const result =  await updateDepartment(updatedDepartment).unwrap()
+             if(result?.status==='success'){
+              showSuccess(result?.message)
+              refetch()
+             }
+             else{
+              showError('Unable to update Department'+result?.error.message)
+             }
+      } catch (error) {
+        showError('Unable to update Department  '+  error?.data ? error?.data?.message : error?.error)
+      }      
+    };
+    const handleCreate =async (CreatedDepartment) => {
+      try {
+        const result =  await createDepartment(CreatedDepartment).unwrap()
+             if(result?.status==='success'){
+              showSuccess(result?.message)
+              refetch()
+             }
+             else{
+              showError('Unable to update Department'+result?.error.message)
+             }
+      } catch (error) {
+        showError('Unable to update Department ' + error?.data ? error?.data?.message : error?.error)
+      }      
+    };
+  
+    const handleDelete = async (departmentId) => {
+      try {
+        const result =  await deleteDepartment(departmentId).unwrap()
+             if(result?.status==='success'){
+              showSuccess(result?.message)
+              refetch()
+             }
+             else{
+              showError('Unable to delete Department'+result?.error.message)
+             }
+      } catch (error) {
+        showError('Unable to delete Department ' + error?.data ? error?.data?.message : error?.error)
+      }     
+    };
   const columns = [
-    { field: 'department_name', headerName: 'Department', width: 100 },
+    { field: 'department_name', headerName: 'Department', width: 300 },
+    { field: 'department_head', headerName: 'Department Head', width: 300 },
+    {
+      field:'action', headerName:'Action',headerAlign:'center',width:300,
+      renderCell: (params) => (
+        <div style={{ display: "flex", gap: "10px",justifyContent: "center" }}>
+          <button
+           type="button"
+           className="btn btn-secondary"
+           onClick={() => handleModalOpen("Create")}
+          >
+            Create
+          </button>
+          <button
+           type="button"
+           className="btn btn-primary"
+           onClick={() => handleModalOpen("View", params.row)}
+          >
+            View
+          </button>
+          <button
+            type="button"
+            className="btn btn-warning"
+            onClick={() => handleModalOpen("Edit", params.row)}
+          >
+            Edit
+          </button>
+          <button
+           type="button"
+           className="btn btn-danger"
+           onClick={() => handleModalOpen("Delete", params.row)}
+          >
+            Delete
+          </button>
+        </div>
+      ),
+    }
   ];
 
   return (
@@ -59,10 +161,40 @@ const Department = () => {
             toolbar: GridToolbar ,
           }}
         />
+           {modalState.action === 'View' && (
+        <ViewDepartment
+          open={modalState.open}
+          onClose={handleModalClose}
+          department={modalState.department}
+        />
+      )}
+      {modalState.action === 'Create' && (
+        <CreateModal
+          open={modalState.open}
+          onClose={handleModalClose}
+          onCreate={handleCreate}
+        />
+      )}
+      {modalState.action === 'Edit' && (
+        <EditDepartment
+          open={modalState.open}
+          onClose={handleModalClose}
+          department={modalState.department}
+          onEdit={handleEdit}
+        />
+      )}
+      {modalState.action === 'Delete' && (
+        <DeleteDepartment
+          open={modalState.open}
+          onClose={handleModalClose}
+          department={modalState.department}
+          onDelete={handleDelete}
+        />
+      )}
       </Box>
       </>
       }     
-      {error && <p style={{color:"red",fontSize:16}}>Error loading Department: {error?.message}</p>}
+      {error && <p style={{color:"red",fontSize:16}}>Error loading Department: {error?.error}</p>}
     </Box>
   );
 };

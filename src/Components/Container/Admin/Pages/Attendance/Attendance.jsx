@@ -6,6 +6,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useGetAllEmployeesQuery } from "../../../../Features/Employee";
 import AttendanceSkeleton from "./AttendanceSkeleton";
 import { tokens } from "../../theme";
+import { Header } from "../../components/Header";
 
 const AttendanceSystem = () => {
   const theme = useTheme();
@@ -57,9 +58,7 @@ const AttendanceSystem = () => {
 
   return (
     <Box m={2}>
-      <Typography variant="h4" gutterBottom>
-        Attendance System
-      </Typography>
+      <Header title="Attendance System" subtitle="Dashboard to Manage Employees Attendance" />
 
       {/* Date Selector */}
       <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -234,7 +234,7 @@ const ManageEmployee = () => {
       <EditModal open={modalAction === "Edit"} onClose={handleModalClose} data={selectedRow} />
       <DeleteModal open={modalAction === "Delete"} onClose={handleModalClose} data={selectedRow} />
       </>}
-      {error && <p style={{color:"red",fontSize:16}}>Error loading employee: {error?.message}</p>}
+      {error && <p style={{color:"red",fontSize:16}}>Error loading employee: {error?.error}</p>}
     </Box>
   );
 };

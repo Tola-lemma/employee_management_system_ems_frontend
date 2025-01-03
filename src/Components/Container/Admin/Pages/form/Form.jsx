@@ -22,9 +22,9 @@ export const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const { data: departments = [], isLoading, isError, error } = useGetAllDepartmentsQuery();
+    const { data: departments = [], isLoading, error } = useGetAllDepartmentsQuery();
     const { data: roles = [] } = useGetAllRolesQuery(); 
-    const [createEmployee, { isLoading:loadingCreate, error:errorCreating }] = useCreateEmployeeMutation();
+    const [createEmployee, { isLoading:loadingCreate }] = useCreateEmployeeMutation();
     const {showSuccess , showError} = useContext(ErrorContext)
     const formattedDate = (date) => {
       if (!date) return "Invalid date";
@@ -48,10 +48,16 @@ export const Form = () => {
               showSuccess(result?.message);
               resetForm(); 
             } else {
-              showError(result?.message);
+              showError("Error Creating Employee");
             }
           } catch (err) {
-            showError("Error creating employee", err);
+            if(err?.status===500){
+              showError(err?.data.error)
+            }
+            else if(err?.status===400){ showError(err?.data.message)}
+            else{
+              showError("Error creating employee " + err);
+            }
           }
         }}
       >
@@ -232,7 +238,7 @@ export const Form = () => {
         )}
       </Formik>
       }
-      {(isError || errorCreating )&&<p style={{color:"red",fontSize:16}}>Error: {error.message}</p>}
+      {error&&<p style={{color:"red",fontSize:16}}>Error:  { error?.error}</p>}
     </Box>
   );
 };

@@ -4,7 +4,7 @@ import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css" ;
 import { tokens } from "../../theme";
-import { HomeOutlined, PeopleOutlined, Security ,CalendarTodayOutlined,ContactsOutlined,  MenuOutlined,  DisplaySettings, HowToReg, DeviceHub  } from "@mui/icons-material";
+import { HomeOutlined, PeopleOutlined, DirectionsRun, Security ,CalendarTodayOutlined,ContactsOutlined,  MenuOutlined,  DisplaySettings, HowToReg, DeviceHub  } from "@mui/icons-material";
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 import Zoom from 'react-medium-image-zoom'
@@ -171,6 +171,13 @@ export const Sidebar = () => {
               title="Employee Registration"
               to="/home/register"
               icon={<HowToReg />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+             <Item
+              title="Performance"
+              to="/home/performance"
+              icon={<DirectionsRun />}
               selected={selected}
               setSelected={setSelected}
             />

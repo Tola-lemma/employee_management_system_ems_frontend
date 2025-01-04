@@ -80,6 +80,11 @@
   font-size: 1em;
   font-weight: 500;
 }
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
+}
 /*  responsivenes*/
 /* For Desktop and Tablet View */
 @media screen and (min-width: 768px) {

@@ -15,11 +15,13 @@ import {
       useUpdatePerformanceMutation,
       useDeletePerformanceMutation,
 } from "../../../../Features/Performance.jsx";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 const Performance = () => {
   const { data, isLoading, error, refetch } = useGetPerformanceQuery();
   const [updatePerformance] = useUpdatePerformanceMutation();
   const [createPerformance] = useCreatePerformanceMutation();
   const [deletePerformance] = useDeletePerformanceMutation();
+  const [viewComparison, setViewComparison] = useState(false)
   const { showSuccess, showError } = useContext(ErrorContext)
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -136,10 +138,22 @@ const Performance = () => {
     }
   ];
 
+  //graph data
+  const graphData = data?.map((item) => ({
+    name: item.employee_name,
+    score: item.score,
+  }));
+  const handleComparionView = ()=>{
+    setViewComparison(!viewComparison)
+  }
   return (
     <Box m="20px">
      <Header title="Manage Permormance Review" subtitle="Dashboard to Manage Employee Performance Review" /> 
      {isLoading? <DataGridSkeleton/>:<>
+     <Box display={'flex'} justifyContent={'right'} mb={4}>
+      <button type="button" onClick={handleComparionView} className='btn btn-primary' style={{borderRadius:"20px" ,textAlign:"center"}}>{!viewComparison?"View ":"Hide "}Employee Perfomance Comparison</button>
+     </Box>
+     {!viewComparison?
      <Box
         sx={{
           height: "auto",
@@ -213,6 +227,21 @@ const Performance = () => {
         />
       )}
       </Box>
+       :
+        <Box mt={4} height="400px">
+            <Typography variant="h4" mb={2} ml={4}>
+              Employee Performance Comparison
+            </Typography>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={graphData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="score" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>}
       </>}
       {error && <p style={{color:"red",fontSize:16}}>Error loading performance: {error?.error}</p>}
     </Box>

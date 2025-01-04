@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(null);
   const navigate = useNavigate();
   const activityTimeout = useRef(null);
-
+  const [loading, setLoading] = useState(true); 
   const login = (token) => {
     Cookies.set('token', token, { expires: 1 , 
       secure: false, // Allow cookies on HTTP for development
@@ -33,11 +33,11 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       setAuth({ token });
     }
-
+    setLoading(false);
     // Set up activity listeners
     const resetTimer = () => {
       clearTimeout(activityTimeout.current);
-      activityTimeout.current = setTimeout(logoutDueToInactivity, 10 * 60 * 1000); // 10 minutes
+      activityTimeout.current = setTimeout(logoutDueToInactivity, 60 * 60 * 1000); // 1hr minutes
     };
 
     window.addEventListener('mousemove', resetTimer);
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
   }, [checkTokenExpiry]);
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout }}>
+    <AuthContext.Provider value={{ auth,loading , login, logout }}>
       {children}
     </AuthContext.Provider>
   );

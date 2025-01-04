@@ -1,13 +1,7 @@
-import React from 'react'
-import { Outlet } from 'react-router-dom'
-import { LoginPage } from './Components/Container/Admin/LoginPage/LoginPage'
-const useAuth = ()=>{
-      const token = localStorage.getItem('token')
-      const loggedIn = token;
-      return loggedIn;
-}
+import React, { useContext } from 'react'
+import { Navigate, Outlet } from 'react-router-dom'
+import AuthContext from './Components/Container/Admin/Pages/global/LoginContext';
 export const ProtectedRoute = () => {
-      const isAuth = useAuth()
-  return ( isAuth? <Outlet/> : <LoginPage />
-  )
-}
+      const { auth } = useContext(AuthContext);
+      return auth && auth.token ? <Outlet /> : <Navigate to="/" replace/>;
+};

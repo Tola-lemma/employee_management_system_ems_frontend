@@ -5,7 +5,11 @@ import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css" ;
 import { tokens } from "../../theme";
 import { HomeOutlined, PeopleOutlined, Security ,CalendarTodayOutlined,ContactsOutlined,  MenuOutlined,  DisplaySettings, HowToReg, DeviceHub  } from "@mui/icons-material";
-
+import {jwtDecode} from 'jwt-decode';
+import Cookies from 'js-cookie';
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
+import { useGetEmployeeQuery } from "../../../../Features/Employee";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -28,7 +32,12 @@ export const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  // const { user } = useContext(UserContext);
+  const token = Cookies.get('token');
+  const decoded = jwtDecode(token);
+  let employee_id = decoded.employee_id;
+  const { data: employeeData,refetch} = useGetEmployeeQuery(employee_id);
+  const { profile_picture = "", first_name = "", last_name = "" } = employeeData || {};
+
   return (
     <Box
     height="760px"
@@ -54,7 +63,7 @@ export const Sidebar = () => {
         <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
           <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={() => {setIsCollapsed(!isCollapsed); refetch()}}
             icon={isCollapsed ? <MenuOutlined /> : undefined}
             style={{
               margin: "10px 0 20px 0",
@@ -69,7 +78,7 @@ export const Sidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  EMS
+                  EMS 
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlined />
@@ -81,13 +90,15 @@ export const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
+              <Zoom>
                 <img
                   alt="profile-user"
                   width="100px"
                   height="100px"
-                  src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+                  src={profile_picture || "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
+                /> 
+              </Zoom>             
               </Box>
               <Box textAlign="center">
                 <Typography
@@ -99,7 +110,7 @@ export const Sidebar = () => {
                   {/* {user.role === 'admin' && user.username} */}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[200]}>
-                  EMS Admin
+                {first_name? (first_name +" "+ last_name) : 'EMS User'} 
                 </Typography>
               </Box>
             </Box>

@@ -84,7 +84,6 @@ const Department = () => {
 const departmentManagers = {};
   if (employeeData) {
     employeeData?.forEach((employee) => {
-      console.log("employee",employee);
       const { department, role, first_name, last_name } = employee;
       if (role === 'manager') {
         if (!departmentManagers[department]) {

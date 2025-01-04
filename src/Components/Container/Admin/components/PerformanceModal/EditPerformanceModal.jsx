@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Box, TextField, Button, Typography } from '@mui/material';
+import { Modal, Box, TextField, Button } from '@mui/material';
 import { Header } from '../Header';
 
 const EditModal = ({ open, onClose, performance, onEdit }) => {

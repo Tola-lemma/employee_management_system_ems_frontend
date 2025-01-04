@@ -1,6 +1,5 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { Routes, Route } from "react-router-dom";
-import { UserProvider } from "../global/LoginContext";
 import { PageNotFound } from "../PageNotFound/PageNotFound";
 import { Sidebar } from "../global/Sidebar";
 import { Form } from "../form/Form";
@@ -13,12 +12,13 @@ import Department from "../Department/Department";
 import Role from "../Role/Role";
 import LeaveAdmin from "../Leave/LeaveAdmin";
 import AttendanceSystem from "../Attendance/Attendance";
+import { AuthProvider } from "../global/LoginContext";
 export const AdminPage = () => {
   const [theme, colorMode] = useMode("light");
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ErrorMessage/>
-      <UserProvider >
+      <AuthProvider >
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
@@ -38,7 +38,7 @@ export const AdminPage = () => {
           </main>
         </div>
       </ThemeProvider>
-      </UserProvider>
+      </AuthProvider>
     </ColorModeContext.Provider>
   );
 };

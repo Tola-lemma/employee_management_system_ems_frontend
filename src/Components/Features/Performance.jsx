@@ -17,7 +17,7 @@ export const performanceApiSlice = apiSlice.injectEndpoints({
         if (Array.isArray(response.result)) {
           return response.result.map((item) => ({
             performance_id: item.performance_id,
-            employee_id: item.employee_id,
+            employee_name: item.employee_name,
             review_date: new Date(item.review_date).toLocaleDateString("en-US"),
             score: item.score,
             feedback: item.feedback,

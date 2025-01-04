@@ -13,6 +13,7 @@ import Role from "../Role/Role";
 import LeaveAdmin from "../Leave/LeaveAdmin";
 import AttendanceSystem from "../Attendance/Attendance";
 import { AuthProvider } from "../global/LoginContext";
+import Performance from "../Performance/Performance";
 export const AdminPage = () => {
   const [theme, colorMode] = useMode("light");
   return (
@@ -32,6 +33,7 @@ export const AdminPage = () => {
               <Route path="/role" element={<Role/>} />
               <Route path="/leave" element={<LeaveAdmin/>} />
               <Route path="/attendance" element={<AttendanceSystem/>} />
+              <Route path="/performance" element={<Performance/>} />
               <Route path="/register" element={<Form />} />
               <Route path="/*" element={<PageNotFound />} />
             </Routes>

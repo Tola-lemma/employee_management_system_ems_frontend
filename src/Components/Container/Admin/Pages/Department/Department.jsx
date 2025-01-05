@@ -106,13 +106,13 @@ const departmentManagers = {};
       field:'action', headerName:'Action',headerAlign:'center',width:300,
       renderCell: (params) => (
         <div style={{ display: "flex", gap: "10px",justifyContent: "center" }}>
-          <button
+          {/* <button
            type="button"
            className="btn btn-secondary"
            onClick={() => handleModalOpen("Create")}
           >
             Create
-          </button>
+          </button> */}
           <button
            type="button"
            className="btn btn-primary"
@@ -143,6 +143,16 @@ const departmentManagers = {};
     <Box m="20px">
      <Header title="Manage Department" subtitle="Dashboard to Manage Department" />
      {isLoading? <DataGridSkeleton/> :<>
+      <Box display={'flex'} justifyContent={'right'} mr={8}>
+          <button
+           type="button"
+           className="btn btn-secondary"
+           onClick={() => handleModalOpen("Create")}
+           style={{borderRadius:"20px" ,textAlign:"center"}}
+          >
+            Create Department
+          </button>
+      </Box>
       <Box
         sx={{
           height: "auto",

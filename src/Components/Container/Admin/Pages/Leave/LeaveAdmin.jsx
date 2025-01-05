@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,7 @@ import {
   Tooltip,
   Card,
   CardContent,
+  useTheme,
 } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -22,12 +23,37 @@ import { ResponsivePie } from '@nivo/pie';
 import Calendar from "react-calendar"; 
 import "react-calendar/dist/Calendar.css";
 import './calendar.css'
+import {jwtDecode} from 'jwt-decode';
+import Cookies from 'js-cookie';
+import { useGetEmployeeQuery } from "../../../../Features/Employee.jsx";
+import { useCreateLeaveRequestMutation, useGetLeaveRequestsQuery, useUpdateLeaveRequestMutation } from "../../../../Features/Leave.jsx";
+import { tokens } from "../../theme.js";
+import { ErrorContext } from "../../ToastErrorPage/ErrorContext.jsx";
+import DataGridSkeleton from "../../components/Skeleton.jsx";
+import EditLeaveModal from "./EditModal.jsx";
 const LeaveAdmin = () => {
   const [openRequestModal, setOpenRequestModal] = useState(false);
   const [openStatusModal, setOpenStatusModal] = useState(false);
-  const [leaveData, setLeaveData] = useState([]);
+  // const [leaveData, setLeaveData] = useState([]);
+  const token = Cookies.get('token');
+  const decoded = jwtDecode(token);
+  const fullName = decoded.fullname || ""
+  const employee_id = decoded.employee_id;
+  const { data: employeeData} = useGetEmployeeQuery(employee_id);
+  const { data: leaveData, isLoading, refetch } = useGetLeaveRequestsQuery();
+  const [createLeaveRequest] = useCreateLeaveRequestMutation();
+  const [updateLeave] = useUpdateLeaveRequestMutation();
+  const {showSuccess , showError} = useContext(ErrorContext)
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const { remaining_leave = 20, total_leave = 20 } = employeeData || {};
+  const [modalState, setModalState] = useState({
+    action: null,
+    open: false,
+    leave: null,
+  });
   const [formValues, setFormValues] = useState({
-    name: "Tola Naty", 
+    name: fullName, 
     leaveType: "",
     fromDate: "",
     toDate: "",
@@ -73,32 +99,128 @@ const LeaveAdmin = () => {
   };
   
 
-  const handleSubmit = () => {
-    // Add new leave to the leaveData state
-    setLeaveData([...leaveData, { ...formValues, status: "Pending" }]);
+  const handleSubmit = async () => {
+    try {
+      const result = await createLeaveRequest({
+        employee_id,
+        start_date: formValues.fromDate,
+        end_date: formValues.toDate,
+        reason: formValues.leaveType,
+      }).unwrap();
+  if(result?.result){
+    showSuccess(result?.message)
+    refetch(); 
     setOpenRequestModal(false);
+  }
+  else{
+    showError("Error While requesting Leave.....")
+  }
+    } catch (error) {
+      console.error("Failed to create leave request:", error);
+    }
   };
   //pie chart
-  const totalLeaves = 20;
-  const leavesTaken = 5;
-  const remainingLeaves = totalLeaves - leavesTaken;
-
+  const leavesTaken = total_leave - remaining_leave ;
   const pieChartData = [
     { id: "Taken", label: "Taken", value: leavesTaken, color: "hsl(220, 70%, 50%)" },
-    { id: "Remaining", label: "Remaining", value: remainingLeaves, color: "hsl(120, 70%, 50%)" },
+    { id: "Remaining", label: "Remaining", value: remaining_leave, color: "hsl(120, 70%, 50%)" },
   ];
   //calendar
   const [selectedDate, setSelectedDate] = useState(new Date());
+    // Handle status updates
+    const handleStatusChange = async (params, status) => {
+      try {
+        await updateLeave({
+          leave_id: params,
+          status,
+        }).unwrap();
+        showSuccess(`Leave request updated to ${status}`);
+        refetch()
+      } catch (error) {
+        console.error("Error updating leave status:", error);
+        showError("Failed to update leave request status." );
+      }
+    };
   const columns = [
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "leaveType", headerName: "Leave Type", width: 200 },
-    { field: "fromDate", headerName: "From Date", width: 150 },
-    { field: "toDate", headerName: "To Date", width: 150 },
-    { field: "amountInDays", headerName: "Days", width: 100 },
-    { field: "reason", headerName: "Reason", width: 200 },
+    { field: "name", headerName: "Employee Name", width: 110 },
+    { field: "reason", headerName: "Leave Type", width: 120 },
+    { field: "start_date", headerName: "From Date", width: 90 },
+    { field: "end_date", headerName: "To Date", width: 90 },
+    { field: "created_at", headerName: "Request Day", width: 90 },
+    { field: "amountInDays", headerName: "Leave Days", width: 90,
+      renderCell: (params) => {
+        const startDate = new Date(params.row.start_date);
+        const endDate = new Date(params.row.end_date);
+        
+        // Ensure the dates are valid
+        if (!isNaN(startDate) && !isNaN(endDate)) {
+          const diffInTime = endDate - startDate; // Difference in milliseconds
+          const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24)) + 1; // Convert to days
+          return diffInDays;
+        }
+        return "Invalid Dates"; 
+      },
+     },
     { field: "status", headerName: "Status", width: 150 },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 290,
+      headerAlign: "center",
+      renderCell: (params) => (
+        <div style={{ display: "flex", gap: "10px",justifyContent: "center" }}>
+          <button
+            type="button"
+            className="btn btn-warning"
+            onClick={() => handleModalOpen("Edit", params.row)}
+          >
+            Edit
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={params?.row.status === "Approved" || params?.row.status === "Rejected"}
+            onClick={() => handleStatusChange(params.row.leave_id,"Approved")}
+          >
+            {(params?.row.status === "Approved")?"Approved":"Approve"}
+          </button>
+          <button
+           type="button"
+           className="btn btn-danger"
+           disabled={params?.row.status === "Rejected" || params?.row.status === "Approved"}
+           onClick={() => handleStatusChange(params.row.leave_id,"Rejected")}
+          >
+           {(params?.row.status === "Rejected")? "Rejected":"Decline"}
+          </button>
+        </div>
+      ),
+    },
   ];
 
+  //Edite Leave
+  const handleModalOpen = (action, leave) => {
+    setModalState({ action, open: true, leave });
+  };
+  const handleModalClose = () => {
+    setModalState({ action: null, open: false, role: null });
+  };
+  const handleEdit = async (updatedLeave) => {
+    try {
+      const result = await updateLeave(updatedLeave)
+      if(result?.data?.success){
+        showSuccess(result?.data.message)
+        refetch()
+      }
+      else if(result?.error?.status===500){
+        showError(result?.error?.data?.message)
+      }
+      else{
+        showError('Error while Updating Leave request')
+      }
+    } catch (error) {
+      showError('Error While Updating Leave',error?.data?.err )
+    }
+  }
   return (
     <Box m="20px">
       <Header
@@ -109,7 +231,6 @@ const LeaveAdmin = () => {
         Leave Management System
       </Typography>
 
-      {/* Overview Section */}
       {/* Overview Section */}
       <Box
         sx={{
@@ -123,13 +244,13 @@ const LeaveAdmin = () => {
           <Typography variant="h6">Overview</Typography>
           <Divider sx={{ my: 2 }} />
           <Typography>
-            Your Total Leaves: <strong>20</strong>
+            Your Total Leaves: <strong>{total_leave}</strong>
           </Typography>
           <Typography>
-            Leaves Taken: <strong>5</strong>
+            Leaves Taken: <strong>{total_leave - remaining_leave}</strong>
           </Typography>
           <Typography>
-            Remaining Leaves: <strong>15</strong>
+            Remaining Leaves: <strong>{remaining_leave}</strong>
           </Typography>
         </Paper>
         <Paper elevation={3} sx={{ padding: 3, width: "48%" }}>
@@ -241,6 +362,16 @@ const LeaveAdmin = () => {
           </Card>
         </Grid>
       </Grid>
+      {/* edit modal  */}
+      {modalState.action === 'Edit' && (
+        <EditLeaveModal
+          open={modalState.open}
+          onClose={handleModalClose}
+          leave={modalState.leave}
+          leaveTypes={leaveTypes}
+          onEdit={handleEdit}
+        />
+      )}
       {/* Request Leave Modal */}
       <Modal open={openRequestModal} onClose={() => setOpenRequestModal(false)}>
         <Box
@@ -329,7 +460,7 @@ const LeaveAdmin = () => {
       </Modal>
 
       {/* Leave Status Modal */}
-      <Modal open={openStatusModal}>
+    {isLoading?<DataGridSkeleton/>:  <Modal open={openStatusModal}>
         <Box
           sx={{
             position: "absolute",
@@ -356,15 +487,52 @@ const LeaveAdmin = () => {
               Close
             </Button>
           </Box>
-          <DataGrid
-            rows={leaveData}
-            columns={columns}
-            slots={{
-              toolbar: GridToolbar,
-            }}
-          />
+          <Box
+                  sx={{
+                    height: "auto",
+                    width: "100%",
+                    "& .css-15n4jlm-MuiDataGrid-root .MuiDataGrid-container--top, .css-15n4jlm-MuiDataGrid-root .MuiDataGrid-container--bottom":
+                      {
+                        backgroundColor: "red",
+                        color: "black",
+                        fontSize: "1rem",
+                        borderBottom: "none",
+                      },
+                    "& .css-15n4jlm-MuiDataGrid-root": {
+                      backgroundColor: "burlywood",
+                      color: "black",
+                    },
+                    "& .css-1knaqv7-MuiButtonBase-root-MuiButton-root": {
+                      color: "black",
+                      fontWeight: "bold",
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                      backgroundColor: `${colors.primary[12]}`,
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                      borderTop: "none",
+                      backgroundColor: `${colors.greenAccent[700]}`,
+                    },
+                    "& .MuiDataGrid-toolbarContainer > button,.css-128fb87-MuiDataGrid-toolbarContainer > button": {
+                      borderTop: "none",
+                      color:`${colors.grey[100]}`,
+                    },
+                  }}
+                >
+                  <DataGrid
+                    rows={leaveData}
+                    columns={columns}
+                    pageSize={10}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    getRowId={(row) => row.leave_id} // Ensure the `id` field is used as the unique row identifier
+                    slots={{
+                      toolbar: GridToolbar ,
+                    }}
+                  />
+                </Box>
         </Box>
       </Modal>
+      }
     </Box>
   );
 };

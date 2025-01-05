@@ -1,20 +1,52 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import DataGridSkeleton from '../../components/Skeleton';
 import { Header } from '../../components/Header';
 import { DataGrid , GridToolbar} from '@mui/x-data-grid';
-import { useGetAttendanceQuery } from "../../../../Features/Attendance";
+import { useGetAttendanceQuery,useDeleteAttendanceMutation } from "../../../../Features/Attendance";
 import { Box, useTheme,Modal } from '@mui/material';
 import { tokens } from '../../theme';
+import { ErrorContext } from '../../ToastErrorPage/ErrorContext';
 const AttendanceData = ({open, onClose})=> {
-      const { data, isLoading } = useGetAttendanceQuery();
+      const { data, isLoading, refetch } = useGetAttendanceQuery();
+      const [deleteAttendance] = useDeleteAttendanceMutation()
        const theme = useTheme();
       const colors = tokens(theme.palette.mode);
+      const {showSuccess,showError}= useContext(ErrorContext)
   const columns = [
             { field: 'employee_name', headerName: 'Employee Name', width: 100 },
             { field: 'check_in_time', headerName: 'check in time', width: 100, },
             { field: 'check_out_time', headerName: 'check out time', width: 100, },
             { field: 'date', headerName: 'Date', width: 100, },
             { field: 'status', headerName: 'status', width: 100, },
+            {
+              field: "action",
+              headerName: "Action",
+              width: 200,
+              headerAlign: "center",
+              renderCell :(params)=>{
+                const handleDelete = async () => {
+                  const confirmDelete = window.confirm("Are you sure you want to delete this attendance record?");
+                  if (confirmDelete) {
+                    try {
+                      await deleteAttendance(params.row.attendance_id);
+                      refetch()
+                      showSuccess('Attendance deleted successfully');
+                    } catch (error) {
+                      showError('Failed to delete attendance');
+                    }
+                  }
+                };
+              return ( <div style={{ display: "flex",justifyContent: "center" }}>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={handleDelete}
+                >
+                  Delete
+                </button>
+                </div>)
+              }
+            }
             
           ];
   return (
@@ -37,7 +69,7 @@ const AttendanceData = ({open, onClose})=> {
      {isLoading? <DataGridSkeleton/> :<>
       <Box
         sx={{
-          height: 400, 
+          height: 450, 
           width: '100%',
           "& .css-15n4jlm-MuiDataGrid-root .MuiDataGrid-container--top, .css-15n4jlm-MuiDataGrid-root .MuiDataGrid-container--bottom":
             {

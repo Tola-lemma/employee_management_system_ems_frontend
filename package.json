@@ -21,6 +21,7 @@
     "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-calendar": "^5.1.0",
+    "react-d3-tree": "^3.6.2",
     "react-dom": "^19.0.0",
     "react-international-phone": "^4.4.0",
     "react-medium-image-zoom": "^5.2.13",

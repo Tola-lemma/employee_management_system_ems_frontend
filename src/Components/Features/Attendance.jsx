@@ -17,7 +17,7 @@ export const attendanceApiSlice = apiSlice.injectEndpoints({
         if (Array.isArray(response.result)) {
           return response.result.map((item) => ({
             attendance_id: item.attendance_id,
-            employee_id: item.employee_id,
+            employee_name: item.employee_name,
             date: new Date(item.date).toLocaleDateString("en-US"),
             status: item.status,
             check_in_time: item.check_in_time,
@@ -27,7 +27,7 @@ export const attendanceApiSlice = apiSlice.injectEndpoints({
           const item = response.result;
           return {
             attendance_id: item.attendance_id,
-            employee_id: item.employee_id,
+            employee_name: item.employee_name,
             date: new Date(item.date).toLocaleDateString("en-US"),
             status: item.status,
             check_in_time: item.check_in_time,

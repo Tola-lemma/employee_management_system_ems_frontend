@@ -98,20 +98,20 @@ const Performance = () => {
   // Define columns for the DataGrid
   const columns = [
     { field: 'employee_name', headerName: 'Employee Name', width: 100 },
-    { field: 'review_date', headerName: 'Review date', width: 100 },
-    { field: 'score', headerName: 'Score', width:50 },
+    { field: 'review_date', headerName: 'Review date', width: 130 },
+    { field: 'score', headerName: 'Score', width:90 },
     { field: 'feedback', headerName: 'Overall Fedback', width: 200 },
     {
-      field:'action', headerName:'Action',headerAlign:'center',width:300,
+      field:'action', headerName:'Action',headerAlign:'center',width:200,
       renderCell: (params) => (
         <div style={{ display: "flex", gap: "10px",justifyContent: "center" }}>
-          <button
+          {/* <button
            type="button"
            className="btn btn-secondary"
            onClick={() => handleModalOpen("Create")}
           >
             Create
-          </button>
+          </button> */}
           <button
            type="button"
            className="btn btn-primary"
@@ -150,7 +150,15 @@ const Performance = () => {
     <Box m="20px">
      <Header title="Manage Permormance Review" subtitle="Dashboard to Manage Employee Performance Review" /> 
      {isLoading? <DataGridSkeleton/>:<>
-     <Box display={'flex'} justifyContent={'right'} mb={4}>
+     <Box display={'flex'} justifyContent={'right'} gap={2} mb={4}>
+          <button
+           type="button"
+           className="btn btn-secondary"
+           onClick={() => handleModalOpen("Create")}
+           style={{borderRadius:"20px" ,textAlign:"center"}}
+          >
+            Create Performance Review
+          </button>
       <button type="button" onClick={handleComparionView} className='btn btn-primary' style={{borderRadius:"20px" ,textAlign:"center"}}>{!viewComparison?"View ":"Hide "}Employee Perfomance Comparison</button>
      </Box>
      {!viewComparison?

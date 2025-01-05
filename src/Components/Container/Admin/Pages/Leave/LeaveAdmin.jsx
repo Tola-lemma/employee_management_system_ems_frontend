@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -127,6 +127,30 @@ const LeaveAdmin = () => {
   ];
   //calendar
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  // Generate an array of all leave dates
+  const leaveDates = useMemo(() => {
+    if (!leaveData) return [];
+    return leaveData.flatMap(({ start_date, end_date }) => {
+      const startDate = new Date(start_date);
+      const endDate = new Date(end_date);
+      const dates = [];
+
+      for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+        dates.push(new Date(d).toISOString().split("T")[0]); // Format as "yyyy-MM-dd"
+      }
+      return dates;
+    });
+  }, [leaveData]);
+
+  // Add a highlight class to dates that are in the leaveDates array
+  const tileClassName = ({ date }) => {
+    const formattedDate = date.toISOString().split("T")[0];
+    if (leaveDates.includes(formattedDate)) {
+      return "highlight"; 
+    }
+    return null;
+  };
     // Handle status updates
     const handleStatusChange = async (params, status) => {
       try {
@@ -339,18 +363,10 @@ const LeaveAdmin = () => {
                     }}
                   >
                     <Calendar
-                      onChange={setSelectedDate}
-                      value={selectedDate}
-                      tileClassName={({ date }) => {
-                        // Example: Highlight specific dates based on conditions
-                        const leaveDates = ["2025-01-10", "2025-01-15"];
-                        if (
-                          leaveDates.includes(date.toISOString().split("T")[0])
-                        ) {
-                          return "highlight";
-                        }
-                      }}
-                        className="custom-calendar"
+                     onChange={setSelectedDate}
+                     value={selectedDate}
+                     tileClassName={tileClassName} 
+                     className="custom-calendar"
                     />
                     <Typography mt={1}>
                       Selected Date: {selectedDate.toDateString()}
@@ -380,7 +396,7 @@ const LeaveAdmin = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
+            bgcolor: "white",
             p: 2,
             borderRadius: 2,
             boxShadow: 24,

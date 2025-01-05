@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, useTheme } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -7,11 +7,27 @@ import { useGetAllEmployeesQuery } from "../../../../Features/Employee";
 import AttendanceSkeleton from "./AttendanceSkeleton";
 import { tokens } from "../../theme";
 import { Header } from "../../components/Header";
+import AttendanceData from "./AttendanceData";
+import { useCreateAttendanceMutation } from "../../../../Features/Attendance";
+import { ErrorContext } from "../../ToastErrorPage/ErrorContext";
 
 const AttendanceSystem = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const {showSuccess,showError}= useContext(ErrorContext)
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [createAttendance]=useCreateAttendanceMutation()
+  const [modalState, setModalState] = useState({
+    open: false,
+  });
+
+  const handleModalOpen = () => {
+    setModalState({  open: true });
+  };
+
+  const handleModalClose = () => {
+    setModalState({ open: false });
+  };
   const [attendance, setAttendance] = useState({});
   const {
     data: employees,
@@ -35,7 +51,47 @@ const AttendanceSystem = () => {
     }
   }, [selectedDate, employees]);
 
-  const handleCheckboxChange = (employeeId, dayIndex) => {
+  const formatTime12Hour = (date) => {
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12; // Convert to 12-hour format
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes; // Add leading zero to minutes
+    return `${hours}:${formattedMinutes} ${ampm}`;
+  };
+  const handleCheckboxChange = async (employeeId, dayIndex,isChecked) => {
+    const year = selectedDate.getFullYear();
+  const month = selectedDate.getMonth();
+  const date = new Date(year, month, dayIndex + 1); // Calculate the exact date
+
+  const status = isChecked ? "present" : "absent";
+  const formattedDate = date.toISOString().split("T")[0];
+  try {
+    let checkInTime = null;
+    let checkOutTime = null;
+
+    if (isChecked) {
+      const now = new Date();
+      checkInTime = formatTime12Hour(now); // Format time as 12-hour
+      const checkOutDate = new Date(now.getTime() + 8 * 60 * 60 * 1000); // Add 8 hours to current time
+      checkOutTime = formatTime12Hour(checkOutDate); // Format time as 12-hour
+    }
+    const payload = {
+      employee_id: employeeId,
+      date: formattedDate,
+      status: status,
+      check_in_time: isChecked ? checkInTime : null,
+      check_out_time: isChecked ? checkOutTime : null,
+    };
+ console.log("paaaty",payload);
+    const response = await createAttendance(payload).unwrap();
+    if(response?.result){
+      showSuccess(response?.result?.status)
+    }
+  } catch (error) {
+    console.error("Error updating attendance:", error);
+  }
+
     setAttendance((prev) => ({
       ...prev,
       [employeeId]: prev[employeeId]?.map((status, index) =>
@@ -58,9 +114,13 @@ const AttendanceSystem = () => {
 
   return (
     <Box m={2}>
+      <AttendanceData
+       open={modalState.open}
+       onClose={handleModalClose}
+      />
       <Header title="Attendance System" subtitle="Dashboard to Manage Employees Attendance" />
-
-      {/* Date Selector */}
+      <Box display={'flex'} justifyContent={'left'} gap={10}>
+         {/* Date Selector */}
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DatePicker
           label="Select Date"
@@ -69,7 +129,15 @@ const AttendanceSystem = () => {
           renderInput={(params) => <Box component="div" {...params} />}
         />
       </LocalizationProvider>
-
+          <button
+           type="button"
+           className="btn btn-primary"
+           onClick={() => handleModalOpen()}
+           style={{borderRadius:"20px" ,textAlign:"center"}}
+          >
+            View Attendance Data
+          </button>
+      </Box>
       {/* Attendance Table */}
       {isLoading ? (
         <AttendanceSkeleton daysInMonth={daysInMonth} />
@@ -142,8 +210,8 @@ const AttendanceSystem = () => {
                           checked={
                             attendance[employee.employee_id]?.[i] || false
                           }
-                          onChange={() =>
-                            handleCheckboxChange(employee.employee_id, i)
+                          onChange={(event) =>
+                            handleCheckboxChange(employee.employee_id, i, event.target.checked)
                           }
                           disabled={isSunday} // Disable checkbox for Sundays
                         />

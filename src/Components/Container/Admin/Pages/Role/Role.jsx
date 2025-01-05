@@ -86,13 +86,13 @@ const Role = () => {
       field:'action', headerName:'Action',headerAlign:'center',width:300,
       renderCell: (params) => (
         <div style={{ display: "flex", gap: "10px",justifyContent: "center" }}>
-          <button
+          {/* <button
            type="button"
            className="btn btn-secondary"
            onClick={() => handleModalOpen("Create")}
           >
             Create
-          </button>
+          </button> */}
           <button
            type="button"
            className="btn btn-primary"
@@ -123,6 +123,16 @@ const Role = () => {
     <Box m="20px">
      <Header title="Manage Role" subtitle="Dashboard to Manage Role" /> 
      {isLoading? <DataGridSkeleton/>:<>
+      <Box display={'flex'} justifyContent={'right'} mb={2} mr={8}>
+          <button
+           type="button"
+           className="btn btn-secondary"
+           onClick={() => handleModalOpen("Create")}
+           style={{borderRadius:"20px" ,textAlign:"center"}}
+          >
+            Create Role
+          </button>
+      </Box>
      <Typography variant="body1" color="error.main" sx={{fontSize:16,fontStyle:"italic", fontWeight:"bold"}}>NB. Permission is based on role, so careful when you assign role to New Employee.</Typography>
       <Box
         sx={{

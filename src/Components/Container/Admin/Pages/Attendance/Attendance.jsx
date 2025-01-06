@@ -8,7 +8,7 @@ import AttendanceSkeleton from "./AttendanceSkeleton";
 import { tokens } from "../../theme";
 import { Header } from "../../components/Header";
 import AttendanceData from "./AttendanceData";
-import { useCreateAttendanceMutation } from "../../../../Features/Attendance";
+import { useCreateAttendanceMutation,useGetAttendanceQuery } from "../../../../Features/Attendance";
 import { ErrorContext } from "../../ToastErrorPage/ErrorContext";
 
 const AttendanceSystem = () => {
@@ -17,6 +17,7 @@ const AttendanceSystem = () => {
   const {showSuccess,showError}= useContext(ErrorContext)
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [createAttendance]=useCreateAttendanceMutation()
+  const {data: attendanceData,refetch}=useGetAttendanceQuery()
   const [modalState, setModalState] = useState({
     open: false,
   });
@@ -37,20 +38,25 @@ const AttendanceSystem = () => {
   } = useGetAllEmployeesQuery();
 
   useEffect(() => {
-    if (employees) {
-      const year = selectedDate.getFullYear();
-      const month = selectedDate.getMonth();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-
+    if (employees && attendanceData) {
       const initialAttendance = employees.reduce((acc, employee) => {
-        acc[employee.employee_id] = Array(daysInMonth).fill(false); // Use a unique ID
+        acc[employee.employee_id] = Array(daysInMonth).fill(false);
+        attendanceData.forEach((record) => {
+          const recordDate = new Date(record.date);
+          if (
+            record.employee_id === employee.employee_id &&
+            recordDate.getMonth() === selectedDate.getMonth() &&
+            recordDate.getFullYear() === selectedDate.getFullYear()
+          ) {
+            acc[employee.employee_id][recordDate.getDate()] = record.status === "present";
+          }
+        });
         return acc;
       }, {});
-
       setAttendance(initialAttendance);
     }
-  }, [selectedDate, employees]);
-
+  }, [employees, attendanceData, selectedDate]);
+  
   const formatTime12Hour = (date) => {
     let hours = date.getHours();
     const minutes = date.getMinutes();
@@ -80,24 +86,25 @@ const AttendanceSystem = () => {
       employee_id: employeeId,
       date: formattedDate,
       status: status,
-      check_in_time: isChecked ? checkInTime : null,
-      check_out_time: isChecked ? checkOutTime : null,
+      check_in_time:  checkInTime,
+      check_out_time:  checkOutTime,
     };
- console.log("paaaty",payload);
     const response = await createAttendance(payload).unwrap();
     if(response?.result){
       showSuccess(response?.result?.status)
+      refetch()
+      setAttendance((prev) => ({
+        ...prev,
+        [employeeId]: prev[employeeId]?.map((currentStatus, index) =>
+          index === dayIndex ? isChecked : currentStatus
+        ),
+      }));
     }
   } catch (error) {
+    showError('Error taking Attendance')
     console.error("Error updating attendance:", error);
   }
 
-    setAttendance((prev) => ({
-      ...prev,
-      [employeeId]: prev[employeeId]?.map((status, index) =>
-        index === dayIndex ? !status : status
-      ),
-    }));
   };
 
   const getDayOfWeek = (day) => {

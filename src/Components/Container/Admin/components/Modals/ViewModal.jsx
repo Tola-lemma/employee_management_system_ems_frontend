@@ -1,8 +1,19 @@
 import React from "react";
-import { Modal, Box, Typography, Button } from "@mui/material";
+import { Modal, Box, Typography, Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+ } from "@mui/material";
 import { Header } from "../Header";
+import { useGetEmployeeDepartmentHistoryQuery } from "../../../../Features/Department";
 
 const ViewModal = ({ open, onClose, data }) => {
+  const { data: departmentHistory, isLoading:deparmentHistoryLoading } =
+    useGetEmployeeDepartmentHistoryQuery(data?.employee_id);
   return (
     <Modal open={open} onClose={onClose}>
       <Box
@@ -18,7 +29,9 @@ const ViewModal = ({ open, onClose, data }) => {
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          maxWidth: 800,
+          maxWidth: 900,
+          overflow:'hidden',
+          height:"680px"
         }}
       >
             <Header
@@ -71,7 +84,33 @@ const ViewModal = ({ open, onClose, data }) => {
             </Typography>
           </Box>
         </Box>
-        <Button onClick={onClose} variant="contained" color="secondary">
+       <h3>Employee Work History  (Found: {departmentHistory?.length})</h3>
+      {deparmentHistoryLoading&&<p>Employee Department History is Loading</p>}
+    {/* {error&&<p style={{color:"red"}}>Error Loading Employee Department History</p>} */}
+    {(!departmentHistory || departmentHistory.length === 0)?<p>No department history available for this employee.</p>
+      :<TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell  style={{fontWeight:"bold",color:"black"}}>Department</TableCell>
+            <TableCell  style={{fontWeight:"bold",color:"black"}}>Start Date</TableCell>
+            <TableCell  style={{fontWeight:"bold",color:"black"}}>End Date</TableCell>
+            <TableCell  style={{fontWeight:"bold",color:"black"}}>Works For</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {departmentHistory?.map((history) => (
+            <TableRow key={history.history_id}>
+              <TableCell>{history.department_name}</TableCell>
+              <TableCell>{history.start_date}</TableCell>
+              <TableCell>{history.end_date}</TableCell>
+              <TableCell>{history.duration}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>}
+       <Button onClick={onClose} variant="contained" color="secondary">
           Close
         </Button>
       </Box>

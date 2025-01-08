@@ -20,6 +20,26 @@ export const departmentApiSlice = apiSlice.injectEndpoints({
       },
       providesTags: ["ems"], 
     }), 
+    getEmployeeDepartmentHistory: builder.query({
+      query: (employee_id) => ({
+        url: `/employees/department-history/${employee_id}`,
+      }),
+      transformResponse: (response) => {
+
+        if (!response?.result || !Array.isArray(response.result)) {
+          throw new Error("Invalid response structure or empty result");
+        }
+
+        // Transform the data
+        return response.result.map((item) => ({
+          start_date: item.start_date,
+          end_date: item.end_date,
+          department_name: item.department_name,
+          duration:item.duration,
+        }));
+      },
+      providesTags: ["ems-hist"], 
+    }), 
     // Create a new department
     createDepartment: builder.mutation({
       query: (newDepartment) => ({
@@ -60,4 +80,5 @@ export const {
   useCreateDepartmentMutation,
   useUpdateDepartmentMutation,
   useDeleteDepartmentMutation,
+  useGetEmployeeDepartmentHistoryQuery,
 } = departmentApiSlice;

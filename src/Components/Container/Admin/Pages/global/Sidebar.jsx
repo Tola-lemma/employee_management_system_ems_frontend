@@ -4,7 +4,7 @@ import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css" ;
 import { tokens } from "../../theme";
-import { HomeOutlined, PeopleOutlined, DirectionsRun, Security ,CalendarTodayOutlined,ContactsOutlined,  MenuOutlined,  DisplaySettings, HowToReg, DeviceHub  } from "@mui/icons-material";
+import { HomeOutlined, PeopleOutlined, DirectionsRun, Security ,CalendarTodayOutlined, MenuOutlined,  DisplaySettings, HowToReg, DeviceHub, Notifications  } from "@mui/icons-material";
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 import Zoom from 'react-medium-image-zoom'
@@ -154,9 +154,9 @@ export const Sidebar = () => {
               setSelected={setSelected}
             />
              <Item
-              title="Contacts Information"
-              to="/home/contacts"
-              icon={<ContactsOutlined />}
+              title="Push Notification"
+              to="/home/notification"
+              icon={<Notifications />}
               selected={selected}
               setSelected={setSelected}
             />

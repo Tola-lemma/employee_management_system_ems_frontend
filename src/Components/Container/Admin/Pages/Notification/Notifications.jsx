@@ -1,15 +1,13 @@
 import React, { useContext, useState } from "react";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { EditorState, convertToRaw } from "draft-js";
 import { Button, TextField, MenuItem, Box, Autocomplete, Typography } from "@mui/material";
 import { useCreateNotificationMutation } from "../../../../Features/Notifications";
 import { ErrorContext } from "../../ToastErrorPage/ErrorContext";
 import { useGetAllEmployeesQuery } from "../../../../Features/Employee";
 import { Header } from "../../components/Header";
+import EditorJs from './Editor'
 
 const NotificationForm = () => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [message, setMessage] = useState("");
   const [type, setType] = useState("alert");
   const [createNotification, { isLoading: loading }] = useCreateNotificationMutation();
   const { showSuccess, showError } = useContext(ErrorContext);
@@ -32,17 +30,8 @@ const NotificationForm = () => {
         return;
       }
 
-      const contentState = editorState.getCurrentContent();
-      if (!contentState.hasText()) {
-        setValidationError("Message content cannot be empty.");
-        return;
-      }
-
-      const rawMessage = convertToRaw(contentState);
-      const message = JSON.stringify(rawMessage);
-
       const payload = { employee_id, message, type };
-
+console.log("paylo",payload);
       const response = await createNotification(payload);
       if (response?.error?.status === 404) {
         showError(response?.error?.data?.message);
@@ -50,8 +39,8 @@ const NotificationForm = () => {
         showError(response?.error?.data?.error);
       } else if (response?.data?.result) {
         showSuccess(response?.data?.message);
-        setEditorState(EditorState.createEmpty());
         setType("");
+        setMessage('')
         setEmployee_id(null);
         setValidationError(null);
       } else {
@@ -109,14 +98,18 @@ const NotificationForm = () => {
       </TextField>
 
       <Box sx={{ border: "1px solid #ccc", mb: 2, borderRadius: "4px", p: 2 }}>
-        <Editor
+      <EditorJs
+              value={message}
+              setFieldValue={(value) => setMessage(value)}
+            />
+        {/* <Editor
           editorState={editorState}
           toolbarClassName="toolbarClassName"
           wrapperClassName="wrapperClassName"
           editorClassName="editorClassName"
           onEditorStateChange={setEditorState}
           placeholder="Write your message here..."
-        />
+        /> */}
       </Box>
 
       <Button

@@ -15,6 +15,8 @@ import AttendanceSystem from "../Attendance/Attendance";
 import { AuthProvider } from "../global/LoginContext";
 import Performance from "../Performance/Performance";
 import NotificationForm from "../Notification/Notifications";
+import Unauthorized from "../global/Unauthorized";
+import ProtectedInternalRoute from "../global/ProtectInternalRoute";
 export const AdminPage = () => {
   const [theme, colorMode] = useMode("light");
   return (
@@ -29,14 +31,38 @@ export const AdminPage = () => {
             <Topbar />
             <Routes> 
               <Route path="/" element={<Dashboard />} />
-              <Route path="/manage employee" element={<ManageEmployee/>} />
-              <Route path="/department" element={<Department/>} />
-              <Route path="/role" element={<Role/>} />
+              <Route path="/manage employee" element={
+                <ProtectedInternalRoute allowedRoles={['admin']}>
+                    <ManageEmployee />
+               </ProtectedInternalRoute>} />
+              <Route path="/department" element={
+                <ProtectedInternalRoute allowedRoles={['admin','manager']}>
+                        <Department/>
+                </ProtectedInternalRoute>
+                } />
+              <Route path="/role" element={
+                <ProtectedInternalRoute allowedRoles={['admin']}>
+                   <Role/>
+                </ProtectedInternalRoute>
+                } />
               <Route path="/leave" element={<LeaveAdmin/>} />
-              <Route path="/attendance" element={<AttendanceSystem/>} />
-              <Route path="/performance" element={<Performance/>} />
-              <Route path="/notification" element={<NotificationForm/>} />
-              <Route path="/register" element={<Form />} />
+              <Route path="/attendance" element={
+                 <ProtectedInternalRoute allowedRoles={['admin','attendance_taker']}>
+                     <AttendanceSystem/>
+                </ProtectedInternalRoute>} />
+              <Route path="/performance" element={
+                 <ProtectedInternalRoute allowedRoles={['admin','manager','employee']}>
+                   <Performance/>
+                </ProtectedInternalRoute>} />
+              <Route path="/notification" element={
+                <ProtectedInternalRoute allowedRoles={['admin','manager']}>
+                <NotificationForm/>
+                </ProtectedInternalRoute>} />
+              <Route path="/register" element={
+                <ProtectedInternalRoute allowedRoles={['admin']}>
+                    <Form />
+               </ProtectedInternalRoute>} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
               <Route path="/*" element={<PageNotFound />} />
             </Routes>
           </main>

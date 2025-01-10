@@ -11,6 +11,8 @@ import { useContext, useState } from 'react';
 import { ErrorContext } from '../../ToastErrorPage/ErrorContext.jsx';
 import CreateModal from '../../components/DepartmentModal/CreateModal.jsx';
 import { useGetAllEmployeesQuery } from '../../../../Features/Employee.jsx';
+import {jwtDecode} from 'jwt-decode';
+import Cookies from 'js-cookie';
 const Department = () => {
   const { data, isLoading, error,refetch } = useGetAllDepartmentsQuery();
   const [updateDepartment] = useUpdateDepartmentMutation();
@@ -20,6 +22,16 @@ const Department = () => {
   const { showSuccess, showError } = useContext(ErrorContext)
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+     const token = Cookies.get('token');
+      let role;
+      try {
+        if (token) {
+          const decoded = jwtDecode(token);
+          role = decoded.role;
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
     const [modalState, setModalState] = useState({
       action: null,
       open: false,
@@ -126,6 +138,11 @@ const departmentManagers = {};
             type="button"
             className="btn btn-warning"
             onClick={() => handleModalOpen("Edit", { ...params.row, department_head: departmentHead })}
+            style={{
+              cursor: role === "manager" ? "not-allowed" : "pointer",
+              opacity: role === "manager" ? 0.5 : 1,
+             }}
+             disabled={role === "manager"}
           >
             Edit
           </button>
@@ -133,6 +150,11 @@ const departmentManagers = {};
            type="button"
            className="btn btn-danger"
            onClick={() => handleModalOpen("Delete", { ...params.row, department_head: departmentHead })}
+           style={{
+            cursor: role === "manager" ? "not-allowed" : "pointer",
+            opacity: role === "manager" ? 0.5 : 1,
+           }}
+           disabled={role === "manager"}
           >
             Delete
           </button>
@@ -150,7 +172,11 @@ const departmentManagers = {};
            type="button"
            className="btn btn-secondary"
            onClick={() => handleModalOpen("Create")}
-           style={{borderRadius:"20px" ,textAlign:"center"}}
+           style={{borderRadius:"20px" ,textAlign:"center",
+            cursor: role === "manager" ? "not-allowed" : "pointer",
+            opacity: role === "manager" ? 0.5 : 1,
+           }}
+           disabled={role === "manager"}
           >
             Create Department
           </button>

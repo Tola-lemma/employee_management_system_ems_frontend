@@ -18,6 +18,7 @@ import NotificationForm from "../Notification/Notifications";
 import Unauthorized from "../global/Unauthorized";
 import ProtectedInternalRoute from "../global/ProtectInternalRoute";
 import ManageEmployeeByDepartment from "../Employee/ManageEmployeeByDepartment";
+import { Underconstruction } from "../global/Underconstruction";
 export const AdminPage = () => {
   const [theme, colorMode] = useMode("light");
   return (
@@ -68,6 +69,7 @@ export const AdminPage = () => {
                     <Form />
                </ProtectedInternalRoute>} />
               <Route path="/unauthorized" element={<Unauthorized />} />
+              <Route path="/underconstraction" element={<Underconstruction />} />
               <Route path="/*" element={<PageNotFound />} />
             </Routes>
           </main>

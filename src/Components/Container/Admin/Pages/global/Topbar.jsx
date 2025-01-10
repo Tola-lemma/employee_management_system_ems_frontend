@@ -12,6 +12,8 @@ import { useGetNotificationsQuery,useMarkNotificationAsReadMutation } from "../.
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 import { Header } from "../../components/Header";
+import EditModal from "./SettingModal";
+import { useGetEmployeeQuery } from "../../../../Features/Employee";
 export const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -23,6 +25,7 @@ export const Topbar = () => {
     const [modalOpen, setModalOpen] = useState(false);
   const [expanded, setExpanded] = useState(false); 
   const {data:notifications, refetch} = useGetNotificationsQuery(employee_id);
+  const { data, isLoading ,refetch:refetchEmp} = useGetEmployeeQuery(employee_id);
 const [markAsRead] = useMarkNotificationAsReadMutation()
 const handleMarkAsRead = async (notificationId) => {
   try {
@@ -42,6 +45,27 @@ const handleMarkAsRead = async (notificationId) => {
   const handleAccordionToggle = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
+  //setting
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const userData = data || {
+    first_name: "John",
+    last_name: "Doe",
+    email: "john.doe@example.com",
+    phone: "1234567890",
+    address: "123 Street Name",
+    department_id: 1,
+    role_id: 2,
+    date_of_birth: "01/01/1990",
+    date_joined: "01/01/2020",
+    profile_picture: "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg",
+    employee_id: 2,
+  };
+  
+  const handleEditModalOpen = () => {
+    setIsEditModalOpen(true)
+    refetchEmp()
+  };
+  const handleEditModalClose = () => setIsEditModalOpen(false);
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
       {/* SEARCH BAR */}
@@ -62,9 +86,15 @@ const handleMarkAsRead = async (notificationId) => {
           <Notifications />
         </Badge>
       </IconButton>
-        <IconButton>
+        <IconButton onClick={handleEditModalOpen}>
           <Settings />
         </IconButton>
+        <EditModal
+          open={isEditModalOpen}
+          onClose={handleEditModalClose}
+          data={userData}
+          isLoading={isLoading}
+        />
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (
             <DarkModeOutlinedIcon />

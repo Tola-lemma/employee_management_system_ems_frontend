@@ -17,6 +17,7 @@ import Performance from "../Performance/Performance";
 import NotificationForm from "../Notification/Notifications";
 import Unauthorized from "../global/Unauthorized";
 import ProtectedInternalRoute from "../global/ProtectInternalRoute";
+import ManageEmployeeByDepartment from "../Employee/ManageEmployeeByDepartment";
 export const AdminPage = () => {
   const [theme, colorMode] = useMode("light");
   return (
@@ -34,6 +35,10 @@ export const AdminPage = () => {
               <Route path="/manage employee" element={
                 <ProtectedInternalRoute allowedRoles={['admin']}>
                     <ManageEmployee />
+               </ProtectedInternalRoute>} />
+              <Route path="/employee under my supervision" element={
+                <ProtectedInternalRoute allowedRoles={['manager']}>
+                    <ManageEmployeeByDepartment />
                </ProtectedInternalRoute>} />
               <Route path="/department" element={
                 <ProtectedInternalRoute allowedRoles={['admin','manager']}>

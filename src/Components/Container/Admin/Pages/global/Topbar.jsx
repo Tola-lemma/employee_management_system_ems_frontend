@@ -11,6 +11,7 @@ import { ExpandMore, Notifications, Settings } from "@mui/icons-material";
 import { useGetNotificationsQuery,useMarkNotificationAsReadMutation } from "../../../../Features/Notifications";
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
+import { Header } from "../../components/Header";
 export const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -88,12 +89,10 @@ const handleMarkAsRead = async (notificationId) => {
             overflowY: "auto",
           }}
         >
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Notifications
-          </Typography>
+         <Header title="Notifications" subtitle="This is your Notifications" />
 
           {/* New Notifications */}
-          <Typography variant="subtitle1" sx={{ mb: 2 }}>
+          <Typography variant="subtitle1" sx={{ mb: 2,fontWeight:"bold",fontSize:20 }}>
             New Messages
           </Typography>
           {newNotifications.length > 0 ? (
@@ -117,11 +116,11 @@ const handleMarkAsRead = async (notificationId) => {
               </Accordion>
             ))
           ) : (
-            <Typography>No new messages.</Typography>
+            <Typography sx={{color:"red",fontWeight:"bold"}}>No new messages.</Typography>
           )}
 
           {/* Previous Notifications */}
-          <Typography variant="subtitle1" sx={{ mt: 4, mb: 2 }}>
+          <Typography variant="subtitle1" sx={{ mt:4, mb: 2,fontWeight:"bold",fontSize:20 }}>
             Previous Messages
           </Typography>
           {previousNotifications.length > 0 ? (
@@ -140,7 +139,7 @@ const handleMarkAsRead = async (notificationId) => {
               </Accordion>
             ))
           ) : (
-            <Typography>No previous messages.</Typography>
+            <Typography sx={{color:"red",fontWeight:"bold"}}>No previous messages.</Typography>
           )}
 
           {/* Close Button */}

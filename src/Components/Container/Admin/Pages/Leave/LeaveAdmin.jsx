@@ -39,7 +39,7 @@ const LeaveAdmin = () => {
   const decoded = jwtDecode(token);
   const fullName = decoded.fullname || ""
   const employee_id = decoded.employee_id;
-  const { data: employeeData} = useGetEmployeeQuery(employee_id);
+  const { data: employeeData,refetch:employeRefetch} = useGetEmployeeQuery(employee_id);
   const { data: leaveData, isLoading, refetch,error } = useGetLeaveRequestsQuery();
   const [createLeaveRequest] = useCreateLeaveRequestMutation();
   const [updateLeave] = useUpdateLeaveRequestMutation();
@@ -141,6 +141,7 @@ const LeaveAdmin = () => {
   if(result?.result){
     showSuccess(result?.message)
     refetch(); 
+    employeRefetch()
     setOpenRequestModal(false);
   }
   else{
@@ -265,6 +266,7 @@ const LeaveAdmin = () => {
       if(result?.data?.success){
         showSuccess(result?.data.message)
         refetch()
+        employeRefetch()
       }
       else if(result?.error?.status===500){
         showError(result?.error?.data?.message)

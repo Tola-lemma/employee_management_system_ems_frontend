@@ -148,6 +148,13 @@ export const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />}
+            {role === 'manager' && <Item
+              title="My Supervision"
+              to="/home/employee under my supervision"
+              icon={<PeopleOutlined />}
+              selected={selected}
+              setSelected={setSelected}
+            />}
            {(role === 'admin' || role === 'manager') &&  <Item
               title="Department"
               to="/home/department"

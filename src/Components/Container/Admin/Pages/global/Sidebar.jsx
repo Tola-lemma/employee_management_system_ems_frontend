@@ -4,7 +4,7 @@ import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css" ;
 import { tokens } from "../../theme";
-import { HomeOutlined, PeopleOutlined, DirectionsRun, Security ,CalendarTodayOutlined, MenuOutlined,  DisplaySettings, HowToReg, DeviceHub, Notifications  } from "@mui/icons-material";
+import { HomeOutlined, PeopleOutlined, DirectionsRun, Security ,CalendarTodayOutlined, MenuOutlined,  DisplaySettings, HowToReg, DeviceHub, Notifications, Games, Login  } from "@mui/icons-material";
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 import Zoom from 'react-medium-image-zoom'
@@ -49,7 +49,7 @@ export const Sidebar = () => {
   const { profile_picture = "", first_name = "", last_name = "" } = employeeData || {};
   return (
     <Box
-    height="760px"
+    height="900px"
       sx={{
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
@@ -212,9 +212,23 @@ export const Sidebar = () => {
               setSelected={setSelected}
             />}
              <Item
-              title="task"
-              to="/home/task"
+              title="Task"
+              to="/home/underconstraction"
               icon={<DisplaySettings />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+             <Item
+              title="Gamifications"
+              to="/home/underconstraction"
+              icon={<Games />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+             <Item
+              title="User Logging"
+              to="/home/underconstraction"
+              icon={<Login />}
               selected={selected}
               setSelected={setSelected}
             />

@@ -13,7 +13,7 @@ import { useGetEmployeeDepartmentHistoryQuery } from "../../../../Features/Depar
 
 const ViewModal = ({ open, onClose, data }) => {
   const { data: departmentHistory, isLoading:deparmentHistoryLoading } =
-    useGetEmployeeDepartmentHistoryQuery(data?.employee_id);
+    useGetEmployeeDepartmentHistoryQuery(data?.employee_id||0);
   return (
     <Modal open={open} onClose={onClose}>
       <Box

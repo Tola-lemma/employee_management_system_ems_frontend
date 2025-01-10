@@ -104,8 +104,10 @@ const departmentManagers = {};
      },
     {
       field:'action', headerName:'Action',headerAlign:'center',width:300,
-      renderCell: (params) => (
-        <div style={{ display: "flex", gap: "10px",justifyContent: "center" }}>
+      renderCell: (params) => {
+        const departmentHead = departmentManagers[params.row.department_name]?.join(' and ') || 'N/A';
+         return (<>
+         <div style={{ display: "flex", gap: "10px",justifyContent: "center" }}>
           {/* <button
            type="button"
            className="btn btn-secondary"
@@ -116,26 +118,26 @@ const departmentManagers = {};
           <button
            type="button"
            className="btn btn-primary"
-           onClick={() => handleModalOpen("View", params.row)}
+           onClick={() => handleModalOpen("View", { ...params.row, department_head: departmentHead })}
           >
             View
           </button>
           <button
             type="button"
             className="btn btn-warning"
-            onClick={() => handleModalOpen("Edit", params.row)}
+            onClick={() => handleModalOpen("Edit", { ...params.row, department_head: departmentHead })}
           >
             Edit
           </button>
           <button
            type="button"
            className="btn btn-danger"
-           onClick={() => handleModalOpen("Delete", params.row)}
+           onClick={() => handleModalOpen("Delete", { ...params.row, department_head: departmentHead })}
           >
             Delete
           </button>
         </div>
-      ),
+        </>)}
     }
   ];
 

@@ -15,6 +15,8 @@ import {
       useUpdatePerformanceMutation,
       useDeletePerformanceMutation,
 } from "../../../../Features/Performance.jsx";
+import {jwtDecode} from 'jwt-decode';
+import Cookies from 'js-cookie';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 const Performance = () => {
   const { data, isLoading, error, refetch } = useGetPerformanceQuery();
@@ -23,6 +25,21 @@ const Performance = () => {
   const [deletePerformance] = useDeletePerformanceMutation();
   const [viewComparison, setViewComparison] = useState(false)
   const { showSuccess, showError } = useContext(ErrorContext)
+   const token = Cookies.get('token');
+    let fullname;
+    let role;
+    try {
+      if (token) {
+        const decoded = jwtDecode(token);
+        role = decoded.role;
+        fullname = decoded.fullname;
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+    const score = !isLoading && !error && data 
+  ? data.find((record) => record.employee_name === fullname) 
+  : null;
  const theme = useTheme();
     const colors = tokens(theme.palette.mode);
       const [modalState, setModalState] = useState({
@@ -148,21 +165,27 @@ const Performance = () => {
   }
   return (
     <Box m="20px">
-     <Header title="Manage Permormance Review" subtitle="Dashboard to Manage Employee Performance Review" /> 
+    {role!=='employee'&& <Header title="Manage Permormance Review" subtitle="Dashboard to Manage Employee Performance Review" /> }
+    {role==='employee'&&<Header title="Your Permormance Review" subtitle="Dashboard for Your Performance Review" /> }
      {isLoading? <DataGridSkeleton/>:<>
      <Box display={'flex'} justifyContent={'right'} gap={2} mb={4}>
-          <button
+         {(role==='admin' || role === 'manager')&& <button
            type="button"
            className="btn btn-secondary"
            onClick={() => handleModalOpen("Create")}
            style={{borderRadius:"20px" ,textAlign:"center"}}
           >
             Create Performance Review
-          </button>
-      <button type="button" onClick={handleComparionView} className='btn btn-primary' style={{borderRadius:"20px" ,textAlign:"center"}}>{!viewComparison?"View ":"Hide "}Employee Perfomance Comparison</button>
+          </button>}
+      <button type="button" onClick={handleComparionView} className='btn btn-primary' style={{borderRadius:"20px" ,textAlign:"center"}}>{!viewComparison?"View ":"Hide "} {role==='employee'?"Your Performance With Others":'Employee Perfomance Comparison'}</button>
      </Box>
-     {!viewComparison?
-     <Box
+     {!viewComparison?<>
+     {role==='employee' ?<Box mt={8} sx={{display:"flex",justifyContent:"center",flexDirection:"column",alignContent:"center",alignItems:"center"}}>
+         <Typography sx={{fontSize:24,fontWeight:"bold"}} variant="body1" color="initial">Your Overall Performance is</Typography>  
+         <Typography variant="body2" color="initial" sx={{display:"flex",fontSize:58,fontWeight:"bolder"}}>
+          {score?.score}
+         </Typography>
+     </Box>:<Box
         sx={{
           height: "auto",
           width: "100%",
@@ -234,7 +257,8 @@ const Performance = () => {
           onDelete={handleDelete}
         />
       )}
-      </Box>
+      </Box>}
+      </>
        :
         <Box mt={4} height="400px">
             <Typography variant="h4" mb={2} ml={4}>

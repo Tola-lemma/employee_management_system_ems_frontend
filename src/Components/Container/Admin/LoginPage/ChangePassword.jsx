@@ -84,7 +84,7 @@ const handleSubmit = async (e) => {
     <>
   <button
     className="btn btn-primary rounded-pill ms-2 mt-3"
-    onClick={() => navigate("/")}
+    onClick={() => navigate("/home")}
   >
     🏠 Back to Home page
   </button>

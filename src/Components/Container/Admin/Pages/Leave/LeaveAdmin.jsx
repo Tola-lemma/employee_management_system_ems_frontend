@@ -25,7 +25,7 @@ import "react-calendar/dist/Calendar.css";
 import './calendar.css'
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
-import { useGetEmployeeQuery } from "../../../../Features/Employee.jsx";
+import { useGetAllEmployeesQuery, useGetEmployeeQuery } from "../../../../Features/Employee.jsx";
 import { useCreateLeaveRequestMutation, useGetLeaveRequestsQuery, useUpdateLeaveRequestMutation } from "../../../../Features/Leave.jsx";
 import { tokens } from "../../theme.js";
 import { ErrorContext } from "../../ToastErrorPage/ErrorContext.jsx";
@@ -40,12 +40,43 @@ const LeaveAdmin = () => {
   const fullName = decoded.fullname || ""
   const employee_id = decoded.employee_id;
   const { data: employeeData} = useGetEmployeeQuery(employee_id);
-  const { data: leaveData, isLoading, refetch } = useGetLeaveRequestsQuery();
+  const { data: leaveData, isLoading, refetch,error } = useGetLeaveRequestsQuery();
   const [createLeaveRequest] = useCreateLeaveRequestMutation();
   const [updateLeave] = useUpdateLeaveRequestMutation();
+   const { data } = useGetAllEmployeesQuery();
   const {showSuccess , showError} = useContext(ErrorContext)
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+      let role;
+      try {
+        if (token) {
+          const decoded = jwtDecode(token);
+          role = decoded.role;
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+      const EmployeeDataRecords = !isLoading && !error && Array.isArray(leaveData)
+      ? leaveData.filter((record) => record.name?.toLowerCase() === fullName.toLowerCase())
+      : [];
+
+    const { department = "" } = employeeData || {};
+   const loggedInUser = {
+      department: department, 
+    };
+  
+    // Filter employees based on logged-in user's department and role
+    const filteredLeaveData =
+    leaveData?.filter(
+      (leave) =>
+        data?.some(
+          (employee) =>
+            employee.department === loggedInUser.department && // Match department
+            employee.role === "employee" && // Ensure the role is "employee"
+            `${employee.first_name} ${employee.last_name}` === leave.name // Match the leave request with employee
+        )
+    ) || [];
+
   const { remaining_leave = 20, total_leave = 20 } = employeeData || {};
   const [modalState, setModalState] = useState({
     action: null,
@@ -200,22 +231,22 @@ const LeaveAdmin = () => {
           >
             Edit
           </button>
-          <button
+         {(role!=='attendance_taker' && role!=='employee')&&<button
             type="button"
             className="btn btn-primary"
             disabled={params?.row.status === "Approved" || params?.row.status === "Rejected"}
             onClick={() => handleStatusChange(params.row.leave_id,"Approved")}
           >
             {(params?.row.status === "Approved")?"Approved":"Approve"}
-          </button>
-          <button
+          </button>}
+          {(role!=='attendance_taker' && role!=='employee')&& <button
            type="button"
            className="btn btn-danger"
            disabled={params?.row.status === "Rejected" || params?.row.status === "Approved"}
            onClick={() => handleStatusChange(params.row.leave_id,"Rejected")}
           >
            {(params?.row.status === "Rejected")? "Rejected":"Decline"}
-          </button>
+          </button>}
         </div>
       ),
     },
@@ -536,7 +567,13 @@ const LeaveAdmin = () => {
                   }}
                 >
                   <DataGrid
-                    rows={leaveData}
+                    rows={
+                      role === "attendance_taker" || role === "employee"
+                            ? EmployeeDataRecords
+                            : role === "manager"
+                            ? filteredLeaveData
+                            : leaveData 
+                     }
                     columns={columns}
                     pageSize={10}
                     rowsPerPageOptions={[5, 10, 20]}

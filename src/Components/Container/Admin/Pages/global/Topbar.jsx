@@ -20,8 +20,18 @@ export const Topbar = () => {
   const colorMode = useContext(ColorModeContext);
   const { logout } = useContext(AuthContext)
     const token = Cookies.get('token');
-    const decoded = jwtDecode(token);
-    let employee_id = decoded.employee_id;
+    let employee_id;
+
+  try {
+    if (token) {
+      const decoded = jwtDecode(token);
+      employee_id = decoded.employee_id;
+    } else {
+      employee_id = null;
+    }
+  } catch (error) {
+    logout(); 
+  }
     const [modalOpen, setModalOpen] = useState(false);
   const [expanded, setExpanded] = useState(false); 
   const {data:notifications, refetch} = useGetNotificationsQuery(employee_id);

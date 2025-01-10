@@ -18,9 +18,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = useCallback(() => {
-    Cookies.remove('token');
     setAuth(null);
-    navigate('/');
+    setTimeout(() => navigate('/'), 0); 
+    Cookies.remove('token');
   }, [navigate]);
 
   const logoutDueToInactivity =useCallback(() => {
@@ -61,11 +61,15 @@ export const AuthProvider = ({ children }) => {
   const checkTokenExpiry = useCallback(() => {
     const token = Cookies.get('token');
     if (token) {
-      const decodedToken = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
-      if (decodedToken.exp < currentTime) {
-        alert('For security reasons, your session was terminated.');
-        logout();
+      try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp < currentTime) {
+          alert('For security reasons, your session was terminated.');
+          logout();
+        }
+      } catch (error) {
+        logout(); // Fallback if token is invalid
       }
     }
   }, [logout]);

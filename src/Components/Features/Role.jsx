@@ -28,9 +28,9 @@ export const roleApiSlice = apiSlice.injectEndpoints({
         url: "/roles",
         method: "POST",
         body: newRole,
-        headers: {
-          'x-auth-token': Cookies.get('token') || '' 
-         },
+        // headers: {
+        //   'x-auth-token': Cookies.get('token') || '' 
+        //  },
       }),
       invalidatesTags: [{ type: "ems", id: "LIST" }],
     }),

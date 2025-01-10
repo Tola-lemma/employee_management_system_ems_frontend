@@ -1,6 +1,15 @@
 # Employee Management System EMS 
-Here’s a draft for your README based on your request:
+Live Demo here  [https://employee-management-system-ems-bwry.onrender.com](https://employee-management-system-ems-bwry.onrender.com)
+Credential for Admin that created via Super admin is
+:
+# Email : `admin@admin.com`
+# password : `Admin@7896`
 
+
+test for manager:
+   Email: `manager@manager.com`
+   Password: `V9kk!pyQ` 
+OR (you can create your own manager and or employee or attendance taker  using admin credantials and test its functionality)
 ---
 
 ## Login Page

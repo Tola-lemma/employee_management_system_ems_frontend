@@ -7,6 +7,7 @@ import { Modal, Box,  TextField,  Select, MenuItem, useTheme ,
   TableHead,
   TableRow,
   Paper,
+  Typography,
 } from "@mui/material";
 import { Formik } from "formik";
 // import * as yup from "yup";
@@ -25,6 +26,8 @@ import { useGetAllRolesQuery } from "../../../../Features/Role";
 import { useGetAllDepartmentsQuery, useGetEmployeeDepartmentHistoryQuery } from "../../../../Features/Department";
 import { ErrorContext } from "../../ToastErrorPage/ErrorContext";
 import { useUpdateEmployeeMutation } from "../../../../Features/Employee";
+import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
 const EditModal = ({ open, onClose, data }) => {
   const initialValues = {
     first_name: data?.first_name,
@@ -52,6 +55,8 @@ const { data: roles = [] } = useGetAllRolesQuery();
 const [updateEmployee , {isLoading:updateLoading }] = useUpdateEmployeeMutation();
 const {showSuccess , showError, showWarning} = useContext(ErrorContext)
 const [previewImage, setPreviewImage] = useState(data?.profile_picture);
+const navigate = useNavigate()
+  const token = Cookies.get('token');
 const { data: departmentHistory, isLoading:deparmentHistoryLoading } =
     useGetEmployeeDepartmentHistoryQuery(employee_id);
   // Handle file selection for preview
@@ -138,9 +143,11 @@ const result = await updateEmployee({ employee_id, body: formData  }).unwrap();
                 height: 150,
                 borderRadius: "50%",
                 objectFit: "cover",
-                mixBlendMode:"multiply"
+                mixBlendMode:"multiply",
+                marginBottom:"6rem"
               }}
             />
+            <Typography onClick={()=> navigate(`/change_password/${token}`)} style={{fontWeight:"bold",fontSize:17,color:"blue",textDecoration:"underline",cursor:"pointer"}} variant="body1" color="initial">Change Password?</Typography>
           </Box>
 
           {/* User Edit Form */}

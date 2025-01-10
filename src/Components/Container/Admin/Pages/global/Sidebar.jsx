@@ -33,11 +33,20 @@ export const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   const token = Cookies.get('token');
-  const decoded = jwtDecode(token);
-  let employee_id = decoded.employee_id;
+  let employee_id;
+
+  let role;
+  try {
+    if (token) {
+      const decoded = jwtDecode(token);
+      role = decoded.role;
+      employee_id = decoded.employee_id;
+    }
+  } catch (error) {
+    console.error("Error decoding token:", error);
+  }
   const { data: employeeData,refetch} = useGetEmployeeQuery(employee_id);
   const { profile_picture = "", first_name = "", last_name = "" } = employeeData || {};
-
   return (
     <Box
     height="760px"
@@ -132,34 +141,34 @@ export const Sidebar = () => {
             >
               Data
             </Typography>
-            <Item
+            {role === 'admin' && <Item
               title="Manage Employee"
               to="/home/manage employee"
               icon={<PeopleOutlined />}
               selected={selected}
               setSelected={setSelected}
-            />
-            <Item
+            />}
+           {(role === 'admin' || role === 'manager') &&  <Item
               title="Department"
               to="/home/department"
               icon={<DeviceHub />}
               selected={selected}
               setSelected={setSelected}
-            />
-             <Item
+            />}
+            {(role === 'admin') &&  <Item
               title="Role"
               to="/home/role"
               icon={<Security />}
               selected={selected}
               setSelected={setSelected}
-            />
-             <Item
+            />}
+            {(role === 'admin' || role === 'manager') &&  <Item
               title="Push Notification"
               to="/home/notification"
               icon={<Notifications />}
               selected={selected}
               setSelected={setSelected}
-            />
+            />}
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -167,20 +176,20 @@ export const Sidebar = () => {
             >
               Pages
             </Typography>
-            <Item
+            {role === 'admin'&&   <Item
               title="Employee Registration"
               to="/home/register"
               icon={<HowToReg />}
               selected={selected}
               setSelected={setSelected}
-            />
-             <Item
+            />}
+            {(role === 'admin' || role === 'manager' ||role==='employee') &&<Item
               title="Performance"
               to="/home/performance"
               icon={<DirectionsRun />}
               selected={selected}
               setSelected={setSelected}
-            />
+            />}
              <Item
               title="Leave"
               to="/home/leave"
@@ -188,13 +197,13 @@ export const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-             <Item
+             {(role === 'admin' || role === 'attendance_taker') && <Item
               title="Attendace"
               to="/home/attendance"
               icon={<CalendarTodayOutlined />}
               selected={selected}
               setSelected={setSelected}
-            />
+            />}
              <Item
               title="task"
               to="/home/task"

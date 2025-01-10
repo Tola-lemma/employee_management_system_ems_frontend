@@ -1,6 +1,7 @@
 // import { apiURl } from '../Constants/api';/
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-const apiURl = 'http://localhost:5000';
+const apiURl = 'https://ems-server-tem1.onrender.com';
+// const apiURl = 'http://localhost:5000';
 const baseQuery = fetchBaseQuery({
 baseUrl:apiURl,
 // credentials:'include',

@@ -52,9 +52,9 @@ export const departmentApiSlice = apiSlice.injectEndpoints({
         url: "/departments",
         method: "POST",
         body: newDepartment,
-        headers: {
-          'x-auth-token': Cookies.get('token') || '' 
-         },
+        // headers: {
+        //   'x-auth-token': Cookies.get('token') || '' 
+        //  },
       }),
       invalidatesTags: [{ type: "ems", id: "LIST" }],
     }),

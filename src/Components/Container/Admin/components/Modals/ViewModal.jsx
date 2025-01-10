@@ -99,8 +99,8 @@ const ViewModal = ({ open, onClose, data }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {departmentHistory?.map((history) => (
-            <TableRow key={history.history_id}>
+          {departmentHistory?.map((history, index) => (
+            <TableRow key={history.history_id|| `history-${index}`}>
               <TableCell>{history.department_name}</TableCell>
               <TableCell>{history.start_date}</TableCell>
               <TableCell>{history.end_date}</TableCell>

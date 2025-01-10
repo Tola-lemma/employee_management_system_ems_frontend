@@ -1,11 +1,14 @@
 import { apiSlice } from "../API/apiSlice";
-
+import Cookies from 'js-cookie';
 export const notificationApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch notifications (all or by employee_id)
     getNotifications: builder.query({
-      query: (employee_id) =>
-        employee_id ? `/notifications/${employee_id}` : "/notifications",
+      query: (employee_id) =>({
+        url: employee_id ? `/notifications/${employee_id}` : "/notifications",
+      headers: {
+        'x-auth-token': Cookies.get('token') || '' 
+       }}),
       transformResponse: (response) => {
         if (!response?.result) {
           throw new Error("Invalid response structure or empty result");
@@ -37,6 +40,9 @@ export const notificationApiSlice = apiSlice.injectEndpoints({
         url: "/notifications",
         method: "POST",
         body: newNotification,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: ["Notification"],
     }),
@@ -46,6 +52,9 @@ export const notificationApiSlice = apiSlice.injectEndpoints({
       query: (notification_id) => ({
         url: `/notifications/${notification_id}`,
         method: "PUT",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, notification_id) => [
         { type: "Notification", id: notification_id },
@@ -57,6 +66,9 @@ export const notificationApiSlice = apiSlice.injectEndpoints({
       query: (notification_id) => ({
         url: `/notifications/${notification_id}`,
         method: "DELETE",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, notification_id) => [
         { type: "Notification", id: notification_id },

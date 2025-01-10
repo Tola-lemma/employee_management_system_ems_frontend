@@ -1,11 +1,14 @@
 import { apiSlice } from "../API/apiSlice";
-
+import Cookies from 'js-cookie';
 export const leaveApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch leave requests (all or by `leave_id`)
     getLeaveRequests: builder.query({
-      query: (leave_id) =>
-        leave_id ? `/leave/${leave_id}` : "/leave",
+      query: (leave_id) =>({
+       url: leave_id ? `/leave/${leave_id}` : "/leave",
+      headers: {
+        'x-auth-token': Cookies.get('token') || '' 
+       }}),
       transformResponse: (response) => {
         if (!response?.result) {
           throw new Error("Invalid response structure or empty result");
@@ -52,6 +55,9 @@ export const leaveApiSlice = apiSlice.injectEndpoints({
         url: "/leave",
         method: "POST",
         body: newLeave,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: ["leave"],
     }),
@@ -62,6 +68,9 @@ export const leaveApiSlice = apiSlice.injectEndpoints({
         url: `/leave/${leave_id}`,
         method: "PUT",
         body: updatedData,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, { leave_id }) => [
         { type: "leave", id: leave_id },
@@ -73,6 +82,9 @@ export const leaveApiSlice = apiSlice.injectEndpoints({
       query: (leave_id) => ({
         url: `/leave/${leave_id}`,
         method: "DELETE",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, leave_id) => [
         { type: "leave", id: leave_id },

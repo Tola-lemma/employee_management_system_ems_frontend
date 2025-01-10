@@ -1,13 +1,14 @@
 import { apiSlice } from "../API/apiSlice";
-
+import Cookies from 'js-cookie';
 export const performanceApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch performance records (all or by `performance_id`)
     getPerformance: builder.query({
-      query: (performance_id) =>
-        performance_id
-          ? `/performance/${performance_id}`
-          : "/performance",
+      query: (performance_id) =>({
+          url: performance_id ? `/performance/${performance_id}`: "/performance",
+          headers: {
+            'x-auth-token': Cookies.get('token') || '' 
+           },}),
       transformResponse: (response) => {
         if (!response?.result) {
           throw new Error("Invalid response structure or empty result");
@@ -45,6 +46,9 @@ export const performanceApiSlice = apiSlice.injectEndpoints({
         url: "/performance",
         method: "POST",
         body: newPerformance,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: ["performance"],
     }),
@@ -55,6 +59,9 @@ export const performanceApiSlice = apiSlice.injectEndpoints({
         url: `/performance/${performance_id}`,
         method: "PUT",
         body: updatedData,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, { performance_id }) => [
         { type: "performance", id: performance_id },
@@ -66,6 +73,9 @@ export const performanceApiSlice = apiSlice.injectEndpoints({
       query: (performance_id) => ({
         url: `/performance/${performance_id}`,
         method: "DELETE",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, performance_id) => [
         { type: "performance", id: performance_id },

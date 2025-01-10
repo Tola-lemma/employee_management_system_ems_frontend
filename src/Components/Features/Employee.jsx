@@ -1,10 +1,13 @@
 import { apiSlice } from "../API/apiSlice";
-
+import Cookies from 'js-cookie';
 export const employeeApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllEmployees: builder.query({
       query: () => ({
         url: "/employees",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       transformResponse: (response) => {
         if (!response?.result || !Array.isArray(response.result)) {
@@ -36,6 +39,9 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
     getEmployee: builder.query({
       query: (employee_id) => ({
         url: `/employees/${employee_id}`,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       transformResponse: (response) => {
         if (!response?.result || typeof response.result !== "object") {
@@ -80,6 +86,9 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
         url: `/employees/${employee_id}`,
         method: "PUT",
         body,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       providesTags: ["ems"],
     }),
@@ -89,6 +98,9 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
       query: (employee_id) => ({
         url: `/employees/${employee_id}`,
         method: "DELETE",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: ['ems'],
     }),
@@ -96,6 +108,9 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
       query: (employee_id) => ({
         url: `/password-reset/${employee_id}`,
         method: 'POST',
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
     }),
   }),

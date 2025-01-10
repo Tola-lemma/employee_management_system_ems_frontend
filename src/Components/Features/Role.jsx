@@ -1,10 +1,13 @@
 import { apiSlice } from "../API/apiSlice";
-
+import Cookies from 'js-cookie';
 export const roleApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllRoles: builder.query({
       query: () => ({
         url: "/roles",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       transformResponse: (response) => {
 
@@ -25,6 +28,9 @@ export const roleApiSlice = apiSlice.injectEndpoints({
         url: "/roles",
         method: "POST",
         body: newRole,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: [{ type: "ems", id: "LIST" }],
     }),
@@ -35,6 +41,9 @@ export const roleApiSlice = apiSlice.injectEndpoints({
         url: `/roles/${role_id}`,
         method: "PUT",
         body: updatedData,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, { role_id }) => [
         { type: "ems", id: role_id },
@@ -46,6 +55,9 @@ export const roleApiSlice = apiSlice.injectEndpoints({
       query: (role_id) => ({
         url: `/roles/${role_id}`,
         method: "DELETE",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, role_id) => [
         { type: "ems", id: role_id },

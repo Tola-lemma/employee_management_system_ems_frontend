@@ -1,13 +1,16 @@
 import { apiSlice } from "../API/apiSlice";
-
+import Cookies from 'js-cookie';
 export const attendanceApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch attendance records (all or by `attendance_id`)
     getAttendance: builder.query({
-      query: (attendance_id) =>
-        attendance_id
+      query: (attendance_id) =>({
+        url:attendance_id
           ? `/attendance/${attendance_id}`
           : "/attendance",
+          headers: {
+            'x-auth-token': Cookies.get('token') || '' 
+           }}),
       transformResponse: (response) => {
         if (!response?.result) {
           throw new Error("Invalid response structure or empty result");
@@ -49,6 +52,9 @@ export const attendanceApiSlice = apiSlice.injectEndpoints({
         url: "/attendance",
         method: "POST",
         body: newAttendance,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: ["attendance"],
     }),
@@ -59,6 +65,9 @@ export const attendanceApiSlice = apiSlice.injectEndpoints({
         url: `/attendance/${attendance_id}`,
         method: "PUT",
         body: updatedData,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, { attendance_id }) => [
         { type: "attendance", id: attendance_id },
@@ -70,6 +79,9 @@ export const attendanceApiSlice = apiSlice.injectEndpoints({
       query: (attendance_id) => ({
         url: `/attendance/${attendance_id}`,
         method: "DELETE",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, attendance_id) => [
         { type: "attendance", id: attendance_id },

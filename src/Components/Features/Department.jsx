@@ -1,10 +1,13 @@
 import { apiSlice } from "../API/apiSlice";
-
+import Cookies from 'js-cookie';
 export const departmentApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllDepartments: builder.query({
       query: () => ({
         url: "/departments",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       transformResponse: (response) => {
 
@@ -23,6 +26,9 @@ export const departmentApiSlice = apiSlice.injectEndpoints({
     getEmployeeDepartmentHistory: builder.query({
       query: (employee_id) => ({
         url: `/employees/department-history/${employee_id}`,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       transformResponse: (response) => {
 
@@ -46,6 +52,9 @@ export const departmentApiSlice = apiSlice.injectEndpoints({
         url: "/departments",
         method: "POST",
         body: newDepartment,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: [{ type: "ems", id: "LIST" }],
     }),
@@ -56,6 +65,9 @@ export const departmentApiSlice = apiSlice.injectEndpoints({
         url: `/departments/${department_id}`,
         method: "PUT",
         body: updatedData,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, { department_id }) => [
         { type: "ems", id: department_id },
@@ -67,6 +79,9 @@ export const departmentApiSlice = apiSlice.injectEndpoints({
       query: (department_id) => ({
         url: `/departments/${department_id}`,
         method: "DELETE",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, department_id) => [
         { type: "ems", id: department_id },

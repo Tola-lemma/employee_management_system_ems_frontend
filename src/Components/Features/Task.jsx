@@ -1,11 +1,14 @@
 import { apiSlice } from "../API/apiSlice";
-
+import Cookies from 'js-cookie';
 export const taskApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch tasks (all or by `task_id`)
     getTasks: builder.query({
-      query: (task_id) =>
-        task_id ? `/tasks/${task_id}` : "/tasks",
+      query: (task_id) =>({
+      url:  task_id ? `/tasks/${task_id}` : "/tasks",
+      headers: {
+        'x-auth-token': Cookies.get('token') || '' 
+       }}),
       transformResponse: (response) => {
         if (!response?.result) {
           throw new Error("Invalid response structure or empty result");
@@ -43,6 +46,9 @@ export const taskApiSlice = apiSlice.injectEndpoints({
         url: "/tasks",
         method: "POST",
         body: newTask,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: ["task"],
     }),
@@ -53,6 +59,9 @@ export const taskApiSlice = apiSlice.injectEndpoints({
         url: `/tasks/${task_id}`,
         method: "PUT",
         body: updatedData,
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, { task_id }) => [
         { type: "task", id: task_id },
@@ -64,6 +73,9 @@ export const taskApiSlice = apiSlice.injectEndpoints({
       query: (task_id) => ({
         url: `/tasks/${task_id}`,
         method: "DELETE",
+        headers: {
+          'x-auth-token': Cookies.get('token') || '' 
+         },
       }),
       invalidatesTags: (result, error, task_id) => [
         { type: "task", id: task_id },

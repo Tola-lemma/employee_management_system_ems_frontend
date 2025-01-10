@@ -56,7 +56,9 @@ export const employeeApiSlice = apiSlice.injectEndpoints({
           profile_picture: response.result.profile_picture,
           role: response.result.role,
           total_leave:response.result.total_leave,
-          remaining_leave:response.result.remaining_leave
+          remaining_leave:response.result.remaining_leave,
+          role_id:response.result.role_id,
+          department_id:response.result.department_id,
         };
       },
       providesTags: ["ems"],

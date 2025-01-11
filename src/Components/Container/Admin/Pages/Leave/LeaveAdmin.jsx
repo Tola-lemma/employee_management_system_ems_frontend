@@ -71,10 +71,10 @@ const LeaveAdmin = () => {
       (leave) =>
         data?.some(
           (employee) =>
-            employee.department === loggedInUser.department && // Match department
-            employee.role === "employee" && // Ensure the role is "employee"
-            `${employee.first_name} ${employee.last_name}` === leave.name // Match the leave request with employee
-        )
+           ( employee.department === loggedInUser.department && 
+            employee.role === "employee" && 
+            `${employee.first_name} ${employee.last_name}` === leave.name) ||
+              fullName === leave.name  )
     ) || [];
 
   const { remaining_leave = 20, total_leave = 20 } = employeeData || {};
@@ -228,6 +228,7 @@ const LeaveAdmin = () => {
           <button
             type="button"
             className="btn btn-warning"
+            disabled={params?.row.status === "Approved" || params?.row.status === "Rejected" }
             onClick={() => handleModalOpen("Edit", params.row)}
           >
             Edit
@@ -235,7 +236,7 @@ const LeaveAdmin = () => {
          {(role!=='attendance_taker' && role!=='employee')&&<button
             type="button"
             className="btn btn-primary"
-            disabled={params?.row.status === "Approved" || params?.row.status === "Rejected"}
+            disabled={params?.row.status === "Approved" || params?.row.status === "Rejected" || params?.row.name===fullName}
             onClick={() => handleStatusChange(params.row.leave_id,"Approved")}
           >
             {(params?.row.status === "Approved")?"Approved":"Approve"}
@@ -243,7 +244,7 @@ const LeaveAdmin = () => {
           {(role!=='attendance_taker' && role!=='employee')&& <button
            type="button"
            className="btn btn-danger"
-           disabled={params?.row.status === "Rejected" || params?.row.status === "Approved"}
+           disabled={params?.row.status === "Rejected" || params?.row.status === "Approved" || params?.row.name===fullName}
            onClick={() => handleStatusChange(params.row.leave_id,"Rejected")}
           >
            {(params?.row.status === "Rejected")? "Rejected":"Decline"}

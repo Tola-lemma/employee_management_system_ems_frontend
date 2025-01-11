@@ -144,6 +144,13 @@ The system has four distinct roles: **Admin**, **Manager**, **Employee**, and **
 | View Notifications                   | Yes       | Yes         | Yes          | Yes                   |
 
 ---
+# Leave Management
+
+- Leave requests can only be edited if they have not yet been approved or rejected.  
+- Managers and Admins cannot approve or reject their own leave requests; the approval and rejection buttons will be disabled for them in such cases.  
+- Employees and Attendance Takers do not have access to the approval or rejection buttons.  
+- Managers can view the status of their own leave requests as well as those of the employees under their supervision.  
+---
 
 # Some Major pages Overview
 ![Change Password Page](./src/Assets/all/1.png)

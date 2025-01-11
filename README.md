@@ -151,7 +151,10 @@ The system has four distinct roles: **Admin**, **Manager**, **Employee**, and **
 - Employees and Attendance Takers do not have access to the approval or rejection buttons.  
 - Managers can view the status of their own leave requests as well as those of the employees under their supervision.  
 ---
-
+# Tecknologies used
+![teck](./src/Assets/teck/1.png)
+![teck](./src/Assets/teck/2.png)
+---
 # Some Major pages Overview
 ![Change Password Page](./src/Assets/all/1.png)
 ![Change Password Page](./src/Assets/all/2.png)

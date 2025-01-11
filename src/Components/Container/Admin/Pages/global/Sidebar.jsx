@@ -106,6 +106,7 @@ export const Sidebar = () => {
                   height="100px"
                   src={profile_picture || "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
+                  onClick={()=>refetch()}
                 /> 
               </Zoom>             
               </Box>

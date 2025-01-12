@@ -31,7 +31,6 @@ const NotificationForm = () => {
       }
 
       const payload = { employee_id, message, type };
-console.log("paylo",payload);
       const response = await createNotification(payload);
       if (response?.error?.status === 404) {
         showError(response?.error?.data?.message);

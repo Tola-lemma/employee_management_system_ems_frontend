@@ -112,7 +112,7 @@ The system has four distinct roles: **Admin**, **Manager**, **Employee**, and **
   - **Request Leave:** Employees can submit leave requests, which will be reviewed by their manager or admin.
   - **View Their Performance:** Employees can view their performance records and feedback provided by their managers.
   - **View Push Notifications:** Employees can read any notifications sent to them by the admin or manager.
-  - **Complete Tasks:** Employees will be assigned tasks and will be required to complete them (this feature is coming soon).
+  - **Complete Tasks:** Employees will be assigned tasks and will be required to complete them.
   
   **Key Functions:**
   - **Request Leave:** Employees can apply for leave through the system, which will be reviewed by their manager.
@@ -154,6 +154,110 @@ The system has four distinct roles: **Admin**, **Manager**, **Employee**, and **
 # Tecknologies used
 ![teck](./src/Assets/teck/1.png)
 ![teck](./src/Assets/teck/2.png)
+---
+# Task Management
+Here is a detailed **README** for your **Task Management** application, highlighting task categorization and permissions:
+
+---
+
+# **Task Management System**
+
+## **Overview**
+The Task Management System is a comprehensive solution to manage tasks efficiently, enabling different roles (Admin, Manager, Employee, and Attendance Taker) to interact with tasks based on their specific permissions. Tasks are categorized by status and allow for seamless updates and filtering.
+
+---
+
+## **Features**
+1. **Role-Based Permissions**
+   - **Admin**: Full control over all tasks and employees.
+   - **Manager**: Can view and manage tasks for employees within their department and their tasks.
+   - **Employee**: View only tasks assigned to them, categorized by status.
+   - **Attendance Taker**: Limited to viewing and updating their tasks.
+
+2. **Task Categorization**
+   - **Pending**: Newly created tasks awaiting action.
+   - **In-Progress**: Tasks that are actively being worked on.
+   - **Completed**: Tasks that have been successfully finished.
+
+3. **Task Status Updates**
+   - Managers and employees can change task statuses using a dropdown menu.
+   - Automatic marking of tasks as "In-Progress" or "Completed" when updated.
+
+4. **Manager-Specific Toggle View**
+   - Managers can toggle between viewing their tasks and tasks assigned to employees under their supervision.
+
+5. **Badge Notifications**
+   - Icons show the total number of pending tasks for quick insights.
+
+---
+
+## ** Tasks Roles and Permissions**
+### **Admin**
+- Create, update, delete, and view all tasks across all departments.
+- Manage employees and their assignments.
+
+### **Manager**
+- View and manage their tasks and tasks of employees in the same department.
+- Approve, assign, and update tasks.
+- Toggle between personal tasks and supervised employee tasks.
+
+### **Employee**
+- View tasks assigned to them, categorized by status.
+- Update task progress to "In-Progress" or "Completed."
+
+### **Attendance Taker**
+- View and manage their tasks.
+---
+
+## **Task Categorization**
+- **Accordion View**: 
+  - Tasks are displayed within accordions categorized by status (Pending, In-Progress, Completed).
+  - Managers and employees can expand accordions to view details.
+- **Status Dropdown**:
+  - Inside the accordion, a dropdown allows updating task status dynamically.
+
+---
+
+## **Badge Notifications**
+- The sidebar menu displays a badge indicating the number of pending tasks for the logged-in user.
+- Helps users quickly identify pending tasks needing attention.
+
+---
+
+## **UI Components**
+1. **Task DataGrid**
+   - Displays tasks in a tabular format with filters for managers and admin.
+   - Includes actions: view, update, delete.
+
+2. **EmployeeTasks Component**
+   - Displays tasks specific to employees, categorized by status.
+
+3. **Modals**
+   - Used for creating, updating, viewing, and deleting tasks.
+
+4. **Toggle View Button (Manager)**
+   - Allows managers to switch between their tasks and employee tasks.
+
+---
+
+## **Future Enhancements**
+- Add task reminders via email notifications.
+- Integrate advanced reporting and analytics for task progress.
+
+---
+
+## **Screenshots**
+- **Admin Task dashboard**  
+  ![Pending Tasks Accordion](./src/Assets/task/1.png)  
+- **Manager Task dashboard**  
+  ![Task DataGrid](./src/Assets/task/2.png)  
+- **Manager Toggle View**  
+  ![Manager Toggle View](./src/Assets/task/3.png)  
+- **Employee Task Dashboard**  
+  ![Manager Toggle View](./src/Assets/task/4.png)  
+
+---
+
 ---
 # Some Major pages Overview
 ![Change Password Page](./src/Assets/all/1.png)

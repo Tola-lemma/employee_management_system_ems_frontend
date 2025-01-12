@@ -156,8 +156,6 @@ The system has four distinct roles: **Admin**, **Manager**, **Employee**, and **
 ![teck](./src/Assets/teck/2.png)
 ---
 # Task Management
-Here is a detailed **README** for your **Task Management** application, highlighting task categorization and permissions:
-
 ---
 
 # **Task Management System**

@@ -4,8 +4,8 @@ export const taskApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Fetch tasks (all or by `task_id`)
     getTasks: builder.query({
-      query: (task_id) =>({
-      url:  task_id ? `/tasks/${task_id}` : "/tasks",
+      query: (employee_id) =>({
+      url:  employee_id ? `/tasks/${employee_id}` : "/tasks",
       headers: {
         'x-auth-token': Cookies.get('token') || '' 
        }}),
@@ -18,6 +18,7 @@ export const taskApiSlice = apiSlice.injectEndpoints({
         if (Array.isArray(response.result)) {
           return response.result.map((item) => ({
             task_id: item.task_id,
+            fullName: item.fullname,
             employee_id: item.employee_id,
             task_description: item.task_description,
             due_date: new Date(item.due_date).toLocaleDateString("en-US"),
@@ -27,6 +28,7 @@ export const taskApiSlice = apiSlice.injectEndpoints({
           const item = response.result;
           return {
             task_id: item.task_id,
+            fullName: item.fullname,
             employee_id: item.employee_id,
             task_description: item.task_description,
             due_date: new Date(item.due_date).toLocaleDateString("en-US"),

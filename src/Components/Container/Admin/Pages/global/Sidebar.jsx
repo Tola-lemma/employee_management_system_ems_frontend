@@ -1,6 +1,6 @@
 import {useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Badge, Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css" ;
 import { tokens } from "../../theme";
@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { useGetEmployeeQuery } from "../../../../Features/Employee";
+import { useGetTasksQuery } from "../../../../Features/Task";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -47,6 +48,11 @@ export const Sidebar = () => {
   }
   const { data: employeeData,refetch} = useGetEmployeeQuery(employee_id);
   const { profile_picture = "", first_name = "", last_name = "" } = employeeData || {};
+  const { data: tasks} = useGetTasksQuery();
+  // Count pending tasks for the specific employee
+  const pendingTasks = tasks?.filter(
+    (task) => task.employee_id === employee_id && task.status === "pending"
+  ).length;
   return (
     <Box
     height="900px"
@@ -214,8 +220,8 @@ export const Sidebar = () => {
             />}
              <Item
               title="Task"
-              to="/home/underconstraction"
-              icon={<DisplaySettings />}
+              to="/home/task management"
+              icon={ <Badge badgeContent={pendingTasks} color="error" overlap="circular"><DisplaySettings /></Badge>}
               selected={selected}
               setSelected={setSelected}
             />

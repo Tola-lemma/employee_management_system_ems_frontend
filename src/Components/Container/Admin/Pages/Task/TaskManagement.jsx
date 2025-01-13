@@ -276,7 +276,7 @@ const TaskManagement = () => {
           <Typography variant="h6">View Task</Typography>
           <Box mt={2}>
             <Typography><strong>Emp Full Name:</strong> {selectedTask?.fullName}</Typography>
-            <Typography><strong>Description:</strong> {selectedTask?.task_description}</Typography>
+            <Typography><strong>Description:</strong><span dangerouslySetInnerHTML={{ __html: selectedTask?.task_description }}/></Typography>
             <Typography><strong>Due Date:</strong> {selectedTask?.due_date}</Typography>
             <Typography><strong>Status:</strong> {selectedTask?.status}</Typography>
           </Box>

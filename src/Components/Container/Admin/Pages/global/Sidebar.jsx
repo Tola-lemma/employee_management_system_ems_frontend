@@ -227,7 +227,7 @@ export const Sidebar = () => {
             />
              <Item
               title="Gamifications"
-              to="/home/underconstraction"
+              to="/home/gamification"
               icon={<Games />}
               selected={selected}
               setSelected={setSelected}

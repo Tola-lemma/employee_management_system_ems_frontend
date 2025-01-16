@@ -20,6 +20,7 @@ import ProtectedInternalRoute from "../global/ProtectInternalRoute";
 import ManageEmployeeByDepartment from "../Employee/ManageEmployeeByDepartment";
 import { Underconstruction } from "../global/Underconstruction";
 import TaskManagement from "../Task/TaskManagement";
+import GamificationDashboard from "../Gamification/Gamification";
 export const AdminPage = () => {
   const [theme, colorMode] = useMode("light");
   return (
@@ -70,6 +71,7 @@ export const AdminPage = () => {
                     <Form />
                </ProtectedInternalRoute>} />
               <Route path="/task management" element={<TaskManagement/>} />
+              <Route path="/gamification" element={<GamificationDashboard/>} />
               <Route path="/unauthorized" element={<Unauthorized />} />
               <Route path="/underconstraction" element={<Underconstruction />} />
               <Route path="/*" element={<PageNotFound />} />

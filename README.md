@@ -306,6 +306,7 @@ The **Gamification Module** is a system that tracks and manages employee engagem
 # Screenshot
 ![gamification](./src/Assets/gamification/1.png)
 ![gamification](./src/Assets/gamification/2.png)
+![gamification](./src/Assets/gamification/3.png)
 ---
 # Some Major pages Overview
 ![Change Password Page](./src/Assets/all/1.png)

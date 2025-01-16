@@ -255,7 +255,57 @@ The Task Management System is a comprehensive solution to manage tasks efficient
   ![Manager Toggle View](./src/Assets/task/4.png)  
 
 ---
+# **Gamification Module**
 
+## **📌 Overview**
+The **Gamification Module** is a system that tracks and manages employee engagement and performance using a point-based reward system. It allows employees to earn points, level up, receive badges, and track their activity streaks. Admins and managers can update or delete records, while employees and attendance takers can only view their own records.
+
+---
+
+## **📋 Features**
+### 🔹 **Employee Tracking**
+- Each employee has a **gamification record** with **points, levels, badges, and activity streaks**.
+
+### 🔹 **Role-Based Access Control (RBAC)**
+- **Admin/Managers:** Can view, edit, and delete any gamification records.
+- **Employees/Attendance Takers:** Can only view their own records.
+
+### 🔹 **Points & Level System**
+- Employees earn **points** based on engagement.
+- Levels are determined based on total points.
+- **Streaks** track how many consecutive days points have changed.
+
+### 🔹 **Badges**
+- Employees receive **badges** for milestones.
+
+### 🔹 **CRUD Operations**
+- **Create:** Add new gamification records.
+- **Read:** View employee gamification data.
+- **Update:** Modify points via an edit dialog.
+- **Delete:** Remove records (only for authorized roles).
+
+
+---
+
+## **📌 Usage Guide**
+1. **Admin/Manager**
+   - View all records
+   - Edit or delete any gamification entry
+
+2. **Employee/Attendance Taker**
+   - Can only view their own gamification record
+   - Cannot edit or delete records
+
+---
+
+## **🔹 Future Enhancements**
+✅ Leaderboards & Rankings  
+✅ Integration with Performance Reviews  
+✅ Automated Badge Assignment  
+---
+# Screenshot
+![gamification](./src/Assets/gamification/1.png)
+![gamification](./src/Assets/gamification/2.png)
 ---
 # Some Major pages Overview
 ![Change Password Page](./src/Assets/all/1.png)

@@ -517,7 +517,7 @@ const LeaveAdmin = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            bgcolor: "#ffffff",
+            bgcolor: "background.paper",
             p: 4,
             borderRadius: 2,
             boxShadow: 24,

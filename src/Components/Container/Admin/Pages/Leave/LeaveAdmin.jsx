@@ -567,6 +567,11 @@ const LeaveAdmin = () => {
                       borderTop: "none",
                       color:`${colors.grey[100]}`,
                     },
+                    "& .MuiDataGrid-root": {
+                        color: "#000", 
+                        fontWeight: "500",
+                        fontSize:'0.8rem'
+                      },
                   }}
                 >
                   <DataGrid

@@ -4,7 +4,7 @@ import { Badge, Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css" ;
 import { tokens } from "../../theme";
-import { HomeOutlined, PeopleOutlined, DirectionsRun, Security ,CalendarTodayOutlined, MenuOutlined,  DisplaySettings, HowToReg, DeviceHub, Notifications, Games, Login  } from "@mui/icons-material";
+import { HomeOutlined,Info, PeopleOutlined, DirectionsRun, Security ,CalendarTodayOutlined, MenuOutlined,  DisplaySettings, HowToReg, DeviceHub, Notifications, Games, Login  } from "@mui/icons-material";
 import {jwtDecode} from 'jwt-decode';
 import Cookies from 'js-cookie';
 import Zoom from 'react-medium-image-zoom'
@@ -236,6 +236,13 @@ export const Sidebar = () => {
               title="User Logging"
               to="/home/underconstraction"
               icon={<Login />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+             <Item
+              title="About Me"
+              to="/home/about"
+              icon={<Info />}
               selected={selected}
               setSelected={setSelected}
             />

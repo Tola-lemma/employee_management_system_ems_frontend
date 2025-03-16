@@ -21,6 +21,7 @@ import ManageEmployeeByDepartment from "../Employee/ManageEmployeeByDepartment";
 import { Underconstruction } from "../global/Underconstruction";
 import TaskManagement from "../Task/TaskManagement";
 import GamificationDashboard from "../Gamification/Gamification";
+import AboutPage from "../About/about";
 export const AdminPage = () => {
   const [theme, colorMode] = useMode("light");
   return (
@@ -74,6 +75,7 @@ export const AdminPage = () => {
               <Route path="/gamification" element={<GamificationDashboard/>} />
               <Route path="/unauthorized" element={<Unauthorized />} />
               <Route path="/underconstraction" element={<Underconstruction />} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="/*" element={<PageNotFound />} />
             </Routes>
           </main>

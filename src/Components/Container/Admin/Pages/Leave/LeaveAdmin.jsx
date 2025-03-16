@@ -148,7 +148,14 @@ const LeaveAdmin = () => {
     showError("Error While requesting Leave.....")
   }
     } catch (error) {
-      console.error("Failed to create leave request:", error);
+      if(error?.status===400){
+        showError(error?.data?.message)
+      }
+     else{
+      showError("Failed to create leave request:")
+       console.error("Failed to create leave request:", error);
+    } 
+      
     }
   };
   //pie chart

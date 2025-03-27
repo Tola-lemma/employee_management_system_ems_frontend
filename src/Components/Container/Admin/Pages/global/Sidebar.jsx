@@ -219,6 +219,13 @@ export const Sidebar = () => {
               setSelected={setSelected}
             />}
              <Item
+              title="Attendance V2"
+              to="/home/attendanceV2"
+              icon={<CalendarTodayOutlined />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+             <Item
               title="Task"
               to="/home/task management"
               icon={ <Badge badgeContent={pendingTasks} color="error" overlap="circular"><DisplaySettings /></Badge>}

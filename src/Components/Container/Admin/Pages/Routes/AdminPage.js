@@ -12,6 +12,7 @@ import Department from "../Department/Department";
 import Role from "../Role/Role";
 import LeaveAdmin from "../Leave/LeaveAdmin";
 import AttendanceSystem from "../Attendance/Attendance";
+import AttendanceV2 from "../Attendance/AttendanceV2";
 import { AuthProvider } from "../global/LoginContext";
 import Performance from "../Performance/Performance";
 import NotificationForm from "../Notification/Notifications";
@@ -55,6 +56,7 @@ export const AdminPage = () => {
                 </ProtectedInternalRoute>
                 } />
               <Route path="/leave" element={<LeaveAdmin/>} />
+              <Route path="/attendanceV2" element={<AttendanceV2/>} />
               <Route path="/attendance" element={
                  <ProtectedInternalRoute allowedRoles={['admin','attendance_taker']}>
                      <AttendanceSystem/>
